@@ -13,7 +13,7 @@
 
 # 기획
 - 온라인 게임 경매장 시스템을 웹 홈페이지에서 사용할 수 있도록 도메인을 통한 웹 옥션 시스템 구현
-  https://ovenapp.io/project/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5#BOXfZ
+  [https://ovenapp.io/project/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5#BOXfZ](https://ovenapp.io/view/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5/ThKzM)
 
 # 프로그램 주요 기능
 
@@ -71,3 +71,27 @@ __경매장 입찰 내역 조회__
   - 입찰한 상품의 대한 정보(내 입찰 내역)
   - 낙찰에 성공한 상품의 대한 정보(최근거래)
 
+
+
+# 시퀀스 다이어그램
+
+<details>
+<summary>경매장 검색</summary>
+  
+![경매장 검색_2](https://github.com/ccommit/game-aution-server/assets/43266403/2c9e4336-41eb-407c-82f0-3dde53a144e0)
+</details>
+
+<details>
+<summary>경매장 입찰</summary>
+  
+![경매장 입찰_2](https://github.com/ccommit/game-aution-server/assets/43266403/2fa3ca5c-c16a-4ada-a78a-2567de240c6b)
+</details>
+
+
+# 경매장 ERD
+
+<details>
+<summary>경매장 ERD</summary>
+  
+![경매장 ERD2](https://github.com/ccommit/game-aution-server/assets/43266403/f388e685-9de7-452d-9c76-3c9cc633d9e0)
+</details>
