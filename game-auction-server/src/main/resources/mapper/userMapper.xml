@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccommit.gameauctionserver.mapper.UserMapper">
+
+    <!-- 아이디 충복 체크 -->
+    <select id="hasUserID" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM user WHERE user_id = #{user_id}
+    </select>
+
+    <!-- 회원가입 -->
+    <insert id="createUser" parameterType="com.ccommit.gameauctionserver.dto.User">
+        INSERT INTO user (user_id,password,nickname,phoneNumber,gold,user_level,isAdmin,isAbusing)
+        VALUES ( #{user_id}
+                ,#{password}
+                ,#{nickname}
+                ,#{phoneNumber}
+                ,#{gold}
+                ,#{user_level}
+                ,#{isAdmin}
+                ,#{isAbusing});
+    </insert>
+
+</mapper>
