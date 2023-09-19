@@ -78,13 +78,15 @@ __경매장 입찰 내역 조회__
 <details>
 <summary>경매장 검색</summary>
   
-![경매장 검색_2](https://github.com/ccommit/game-aution-server/assets/43266403/2c9e4336-41eb-407c-82f0-3dde53a144e0)
+![경매장 검색-3](https://github.com/ccommit/game-aution-server/assets/43266403/dc3584ac-98b9-4be5-9547-0ee2b06bb047)
+
 </details>
 
 <details>
 <summary>경매장 입찰</summary>
   
-![경매장 입찰_2](https://github.com/ccommit/game-aution-server/assets/43266403/2fa3ca5c-c16a-4ada-a78a-2567de240c6b)
+![경매장 입찰-3](https://github.com/ccommit/game-aution-server/assets/43266403/b5f77f7b-8613-40f4-8b17-87a35520208d)
+
 </details>
 
 
@@ -93,7 +95,7 @@ __경매장 입찰 내역 조회__
 <details>
 <summary>경매장 ERD</summary>
 
-  ![image](https://github.com/ccommit/game-aution-server/assets/43266403/1e493f5c-9673-4493-97a4-686afa9a736a)
+![image](https://github.com/ccommit/game-aution-server/assets/43266403/24e35f2d-d92f-4abe-b79b-1221c78172e6)
 
 
 </details>
