@@ -13,7 +13,7 @@
 
 # 기획
 - 온라인 게임 경매장 시스템을 웹 홈페이지에서 사용할 수 있도록 도메인을 통한 웹 옥션 시스템 구현
-  [https://ovenapp.io/project/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5#BOXfZ](https://ovenapp.io/view/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5/ThKzM)
+  [[https://ovenapp.io/project/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5#BOXfZ](https://ovenapp.io/view/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5/ThKzM)](https://ovenapp.io/view/9YfT2bRPTitLHVIsqgRCwW5oypAWsFY5/ThKzM)
 
 # 프로그램 주요 기능
 
