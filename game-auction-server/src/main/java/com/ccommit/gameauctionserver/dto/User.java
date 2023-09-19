@@ -7,16 +7,16 @@ import lombok.Setter;
 @Setter
 public class User {
 
-    private String user_id;
+    private int id;
+
+    private String userID;
     private String password;
     private String nickname;
     private String phoneNumber;
 
     private int gold = 0;
-    private int user_level = 1;
+    private int userLevel = 1;
 
     private boolean isAdmin = false;
     private boolean isAbusing = false;
-
-    private boolean isLogin;
 }

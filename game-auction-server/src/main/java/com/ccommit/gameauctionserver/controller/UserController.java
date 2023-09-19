@@ -2,6 +2,7 @@ package com.ccommit.gameauctionserver.controller;
 
 import com.ccommit.gameauctionserver.dto.User;
 import com.ccommit.gameauctionserver.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,25 +20,54 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 로그인페이지 이동
     @GetMapping("/login")
     public String createUser()
     {
         return "redirect:/login";
     }
 
-    //회원가입 정보 저장
     @PostMapping("/sign-up")
-    public String login(@RequestBody User user){
-        boolean saveResult = userService.checkUserID(user.getUser_id()) ;
+    public String signUp(@RequestBody User user){
+        boolean saveResult = false;
+        saveResult = userService.checkUserID(user.getUserID()) ;
 
         if(saveResult)
         {
-            return "fail";
-
+            return "Fail : UserID is Duplicate";
         }
         userService.createUser(user);
-        return "login";
+        return "Sign-up Success.";
 
     }
+
+    @PostMapping("/login")
+    public String login(String userID, String userPassword, HttpSession session)
+    {
+        boolean checkInfo = false;
+        checkInfo = userService.compareUserInfo(userID, userPassword);
+
+        if(!checkInfo)
+        {
+            return "Message,Fail to login";
+        }
+
+        User user = userService.findUserInfoByID(userService.getID(userID,userPassword));
+        session.setAttribute("LoginUserInfo", user);
+        return "successPage(redirect:/bid)";
+    }
+
+    @PostMapping("/logout")
+    public void logOut(HttpSession session)
+    {
+        userService.logout(session);
+    }
+
+    //DB 비우기
+    @PostMapping("/deleteAll")
+    public String deleteAll()
+    {
+        userService.deleteAll();
+        return "Delete";
+    }
+
 }
