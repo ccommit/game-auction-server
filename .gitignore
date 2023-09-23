@@ -1,1 +1,5 @@
 game-auction-server\
+build\
+.gradle\
+out\
+.idea\
