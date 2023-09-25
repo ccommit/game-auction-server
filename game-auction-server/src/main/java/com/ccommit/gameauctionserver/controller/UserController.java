@@ -1,73 +1,76 @@
 package com.ccommit.gameauctionserver.controller;
 
+import com.ccommit.gameauctionserver.annotation.CheckLoginStatus;
 import com.ccommit.gameauctionserver.dto.User;
+import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
+import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.service.UserService;
+import com.ccommit.gameauctionserver.utils.ApiResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService)
-    {
-        this.userService = userService;
-    }
-
-    @GetMapping("/login")
-    public String createUser()
-    {
-        return "redirect:/login";
-    }
+    private final LoginService loginService;
 
     @PostMapping("/sign-up")
-    public String signUp(@RequestBody User user){
+    public ApiResponse<?> signUp(@RequestBody User user)
+    {
         boolean saveResult = false;
         saveResult = userService.checkUserID(user.getUserID()) ;
 
         if(saveResult)
         {
-            return "Fail : UserID is Duplicate";
+            return ApiResponse.createError("Fail : Duplicate ID");
         }
         userService.createUser(user);
-        return "Sign-up Success.";
-
+        return ApiResponse.createSuccess(user);
     }
 
     @PostMapping("/login")
-    public String login(String userID, String userPassword, HttpSession session)
-    {
+    public ApiResponse<?> login(@RequestBody User user) {
         boolean checkInfo = false;
-        checkInfo = userService.compareUserInfo(userID, userPassword);
+        checkInfo = userService.compareUserInfo(user.getUserID(), user.getPassword());
 
-        if(!checkInfo)
-        {
-            return "Message,Fail to login";
+        if (!checkInfo) {
+            return ApiResponse.createError("Wrong : ID or Password");
+        } else {
+            loginService.loginUser(user.getUserID());
+
+            return ApiResponse.createSuccess(loginService.getCurrentUser());
         }
-
-        User user = userService.findUserInfoByID(userService.getID(userID,userPassword));
-        session.setAttribute("LoginUserInfo", user);
-        return "successPage(redirect:/bid)";
     }
 
     @PostMapping("/logout")
-    public void logOut(HttpSession session)
+    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
+    public void logout(HttpSession session)
     {
-        userService.logout(session);
+        loginService.logoutUser();
     }
 
-    //DB 비우기
-    @PostMapping("/deleteAll")
-    public String deleteAll()
+    @GetMapping("/mypage")
+    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
+    public ApiResponse<?> mypage()
     {
-        userService.deleteAll();
-        return "Delete";
+        RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUser());
+        return ApiResponse.createSuccess(userInfo);
     }
+
+    @PostMapping("/mypage/update")
+    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
+    public ApiResponse<?> updateUser(@RequestBody RequestUserInfo userInfo)
+    {
+        userInfo.setUserID(loginService.getCurrentUser());
+        userService.updateUserInfo(userInfo);
+
+        return ApiResponse.createSuccess(userInfo);
+    }
+
 
 }
