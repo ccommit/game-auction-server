@@ -4,11 +4,10 @@
 
 <mapper namespace="com.ccommit.gameauctionserver.mapper.BidMapper">
     <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
-        <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            SELECT IFNULL(MAX(id), 0) + 1 FROM bid
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO bid (   id
-                            ,create_time
+        INSERT INTO bid (    create_time
                             ,limit_time
                             ,price
                             ,start_price
@@ -16,19 +15,28 @@
                             ,seller_id
                             ,issold
                             ,item_id)
-        VALUES ( #{id}
-                ,NOW()
-                ,DATE_ADD(NOW(), INTERVAL 1 DAY)
-                ,#{price}
-                ,#{startPrice}
-                ,#{startPrice}
-                ,#{sellerID}
-                ,#{isSold}
-                ,#{itemID});
+
+        VALUES (             NOW()
+                            ,DATE_ADD(NOW(), INTERVAL 1 DAY)
+                            ,#{price}
+                            ,#{startPrice}
+                            ,#{startPrice}
+                            ,#{sellerId}
+                            ,#{isSold}
+                            ,#{itemId});
     </insert>
 
-    <delete id="deleteItemToBid">
-        DELETE FROM bid
-        WHERE limit_time &lt; NOW()
-    </delete>
+    <select id="readLastItemToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  *
+        FROM    bid
+        WHERE   id = LAST_INSERT_ID()
+    </select>
+
+    <select id="readUserItemsToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  *
+        FROM    bid
+        WHERE   seller_id = #{userId}
+    </select>
+
+
 </mapper>

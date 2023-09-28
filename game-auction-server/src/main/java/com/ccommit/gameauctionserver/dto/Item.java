@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class Item {
+
     private int id;
     private String name;
     private int equipmentLevel;
@@ -19,8 +20,7 @@ public class Item {
     private int property2;
 
     private String itemImageURL;
-    private int userID;
+    private int userId;
     private boolean exist;
-
 
 }

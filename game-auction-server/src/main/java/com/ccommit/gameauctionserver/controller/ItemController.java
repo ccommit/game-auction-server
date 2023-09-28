@@ -17,9 +17,8 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @PostMapping("/create")
-    public ApiResponse<?> createItem(@RequestBody Item item)
-    {
+    @PostMapping("")
+    public ApiResponse<?> createItem(@RequestBody Item item) {
         itemService.createItem(item);
         return ApiResponse.createSuccess(item);
     }

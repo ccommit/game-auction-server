@@ -3,12 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ccommit.gameauctionserver.mapper.ItemMapper">
+
     <insert id="createItem" parameterType="com.ccommit.gameauctionserver.dto.Item">
-        <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            SELECT IFNULL(MAX(id), 0) + 1 FROM item
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO item (   id
-                            ,name
+        INSERT INTO item (   name
                             ,equipment_level
                             ,rating
                             ,main_type
@@ -17,20 +17,18 @@
                             ,property2
                             ,item_image_url
                             ,user_id
-                            ,is_Exist)
-        VALUE (     #{id}
-                    ,#{name}
-                    ,#{equipmentLevel}
-                    ,#{rating}
-                    ,#{mainType}
-                    ,#{subType}
-                    ,#{property1}
-                    ,#{property2}
-                    ,#{itemImageURL}
-                    ,#{userID}
-                    ,#{exist});
+                            ,is_Exist )
+
+        VALUE          (     #{name}
+                            ,#{equipmentLevel}
+                            ,#{rating}
+                            ,#{mainType}
+                            ,#{subType}
+                            ,#{property1}
+                            ,#{property2}
+                            ,#{itemImageURL}
+                            ,#{userId}
+                            ,#{exist});
     </insert>
-
-
 
 </mapper>

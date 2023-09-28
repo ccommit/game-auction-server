@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class Bid {
+
     private int id;
     private Date createTime;
     private Date limitTime;
@@ -16,9 +17,9 @@ public class Bid {
     private int startPrice;
     private int presentPrice;
 
-    private String highestBidderID;
-    private String sellerID;
+    private String highestBidderId;
+    private String sellerId;
     private boolean isSold;
-    private int itemID;
+    private int itemId;
 
 }
