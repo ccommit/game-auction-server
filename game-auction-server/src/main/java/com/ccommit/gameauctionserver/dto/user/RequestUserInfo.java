@@ -7,12 +7,14 @@ import lombok.Setter;
 @Setter
 public class RequestUserInfo {
 
-    private String userID;
+    private String userId;
 
     private String nickname;
     private String phoneNumber;
 
     private int gold;
     private int userLevel;
+
+    private UserType userType;
 
 }

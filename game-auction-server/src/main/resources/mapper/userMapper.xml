@@ -4,61 +4,60 @@
 
 <mapper namespace="com.ccommit.gameauctionserver.mapper.UserMapper">
 
-    <select id="getMaxID" resultType="int">
-        SELECT COALESCE(MAX(id),0)
-        FROM user;
+    <select id="isExistId" resultType="boolean">
+        SELECT EXISTS
+        (SELECT id FROM user WHERE user_id = #{userId})
     </select>
 
-    <!-- 아이디 충복 체크 -->
-    <select id="checkUserID" parameterType="String" resultType="int">
-        SELECT COUNT(*) as id
-        FROM user
-        WHERE user_id = #{userID}
-    </select>
-
-    <select id="getID" parameterType="String" resultType="java.lang.Integer">
-    SELECT IFNULL(id,0) as id
-    FROM user
-    WHERE user_id = #{userID}
-    AND password = #{password}
-    </select>
-
-    <!-- 회원가입 -->
     <insert id="createUser" parameterType="com.ccommit.gameauctionserver.dto.User">
-        INSERT INTO user (   id
-                            ,user_id
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO user (   user_id
                             ,password
                             ,nickname
                             ,phone_number
                             ,gold
                             ,user_level
-                            ,isAdmin
-                            ,isAbusing)
-        VALUES ( #{id}
-                ,#{userID}
-                ,#{password}
-                ,#{nickname}
-                ,#{phoneNumber}
-                ,#{gold}
-                ,#{userLevel}
-                ,#{isAdmin}
-                ,#{isAbusing});
+                            ,user_type )
+
+        VALUES           (   #{userId}
+                            ,#{password}
+                            ,#{nickname}
+                            ,#{phoneNumber}
+                            ,#{gold}
+                            ,#{userLevel}
+                            ,#{userType} );
     </insert>
 
-    <select id="readUser" parameterType="int" resultType="com.ccommit.gameauctionserver.dto.User">
-        SELECT id,
-        user_id as userID,
-        password,
-        nickname,
-        gold,
-        user_level as userLevel,
-        phone_number as phoneNumber
-        FROM user
-        WHERE id = #{id}
+    <select id="getID" parameterType="String" resultType="java.lang.Integer">
+    SELECT IFNULL(id,0) as id
+    FROM user
+    WHERE user_id = #{userId}
+    AND password = #{password}
     </select>
 
-    <delete id="deleteAll">
-        DELETE FROM user;
-    </delete>
+    <select id="readUserInfo" resultType="com.ccommit.gameauctionserver.dto.user.RequestUserInfo">
+        SELECT   user_id as userId
+                ,nickname
+                ,phone_number as phoneNumber
+                ,gold
+                ,user_level as userLevel
+                ,user_type as userType
+        FROM    user
+        WHERE   user_id = #{user_Id}
+    </select>
+
+    <update id="updateUser" parameterType="com.ccommit.gameauctionserver.dto.user.RequestUserInfo">
+        UPDATE  user
+        SET
+                <if test="nickname != null">
+                    nickname = #{nickname},
+                </if>
+                <if test="phoneNumber != null">
+                    phone_number = #{phoneNumber}
+                </if>
+        WHERE   user_id = #{userId}
+    </update>
 
 </mapper>

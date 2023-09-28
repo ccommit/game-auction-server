@@ -14,9 +14,9 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
-    private static final String SUCCESS_STATUS = "success";
-    private static final String FAIL_STATUS = "fail";
-    private static final String ERROR_STATUS = "error";
+    private static final String SUCCESS_STATUS = "Success";
+    private static final String FAIL_STATUS = "Validator Error";
+    private static final String ERROR_STATUS = "Exception";
 
     private String status;
     private T data;
@@ -47,12 +47,5 @@ public class ApiResponse<T> {
     {
         return new ApiResponse<>(ERROR_STATUS, null, message);
     }
-
-/*    private ApiResponse(String status, T data, String message)
-    {
-        this.status = status;
-        this.data = data;
-        this.message = message;
-    }*/
 
 }

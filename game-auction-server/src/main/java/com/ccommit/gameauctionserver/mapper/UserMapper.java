@@ -7,9 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
-    int checkUserID(String userID);
+
+    boolean isExistId(String userId);
     void createUser(User user);
-    Integer getID(String userID, String password);
+    Integer getID(String userId, String password);
     void updateUser(RequestUserInfo userInfo);
     void deleteUser(User user);
     RequestUserInfo readUserInfo(String userId);

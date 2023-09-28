@@ -18,21 +18,19 @@ public class LoginCheckAspect {
     private final LoginService loginService;
     private final UserService userService;
 
-    @Before("@annotation(com.ccommit.gameauctionserver.annotation.CheckLoginStatus)")
-    public void loginCheck() throws HttpClientErrorException
+    @Before("@annotation(com.ccommit.gameauctionserver.annotation.CheckLoginStatus) && @annotation(checkLogin)")
+    public void loginCheck(CheckLoginStatus checkLogin) throws HttpClientErrorException
     {
-        userLoginCheck();
-/*        switch (userType.userType()) {
-            case USER -> {
-                userLoginCheck();
-            }
-            case ABUSER -> {
-                abuserLoginCheck();
-            }
-            case ADMIN -> {
-                adminLoginCheck();
-            }
-        }*/
+        String UserId = loginService.getCurrentUser();
+
+        /*
+        TODO :
+        5번이슈 (아이템 입찰)시 어뷰징유저의 경우 입찰 서비스를 이용하지 못하도록 구현 예정입니다.
+        1. checkLogin.userType()
+        2. RequestUserInfo userInfo = userService.readUserInfo(loginService.getUserId());
+        3. if (checkLogin.userType() != userInfo.getUserType())
+           throw new CustomException("해당 유저 ID에서는 권한이 없습니다."){};
+        */
     }
 
     private String getCurrentUser() throws HttpClientErrorException
@@ -44,20 +42,4 @@ public class LoginCheckAspect {
 
         return userId;
     }
-
-    private void userLoginCheck()
-    {
-        String userId = getCurrentUser();
-    }
-
-    private void abuserLoginCheck()
-    {
-
-    }
-
-    private void adminLoginCheck()
-    {
-
-    }
-
 }

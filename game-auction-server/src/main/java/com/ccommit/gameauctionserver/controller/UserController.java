@@ -3,6 +3,8 @@ package com.ccommit.gameauctionserver.controller;
 import com.ccommit.gameauctionserver.annotation.CheckLoginStatus;
 import com.ccommit.gameauctionserver.dto.User;
 import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
+import com.ccommit.gameauctionserver.dto.user.UserType;
+import com.ccommit.gameauctionserver.exception.DuplicateUserException;
 import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.service.UserService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
@@ -20,15 +22,13 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping("/sign-up")
-    public ApiResponse<?> signUp(@RequestBody User user)
-    {
-        boolean saveResult = false;
-        saveResult = userService.checkUserID(user.getUserID()) ;
+    public ApiResponse<?> signUp(@RequestBody User user) {
+        boolean isExist = userService.isExistId(user.getUserId());
 
-        if(saveResult)
-        {
-            return ApiResponse.createError("Fail : Duplicate ID");
+        if (isExist) {
+            throw new DuplicateUserException( "Duplicate ID : " + user.getUserId());
         }
+
         userService.createUser(user);
         return ApiResponse.createSuccess(user);
     }
@@ -36,41 +36,36 @@ public class UserController {
     @PostMapping("/login")
     public ApiResponse<?> login(@RequestBody User user) {
         boolean checkInfo = false;
-        checkInfo = userService.compareUserInfo(user.getUserID(), user.getPassword());
+        checkInfo = userService.compareUserInfo(user.getUserId(), user.getPassword());
 
         if (!checkInfo) {
             return ApiResponse.createError("Wrong : ID or Password");
         } else {
-            loginService.loginUser(user.getUserID());
+            loginService.loginUser(user.getUserId());
 
             return ApiResponse.createSuccess(loginService.getCurrentUser());
         }
     }
 
     @PostMapping("/logout")
-    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
-    public void logout(HttpSession session)
-    {
+    @CheckLoginStatus(userType = UserType.USER)
+    public void logout(HttpSession session) {
         loginService.logoutUser();
     }
 
     @GetMapping("/mypage")
-    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
-    public ApiResponse<?> mypage()
-    {
+    @CheckLoginStatus(userType = UserType.USER)
+    public ApiResponse<?> mypage() {
         RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUser());
         return ApiResponse.createSuccess(userInfo);
     }
 
     @PostMapping("/mypage/update")
-    @CheckLoginStatus(userType = CheckLoginStatus.UserType.USER)
-    public ApiResponse<?> updateUser(@RequestBody RequestUserInfo userInfo)
-    {
-        userInfo.setUserID(loginService.getCurrentUser());
+    @CheckLoginStatus(userType = UserType.USER)
+    public ApiResponse<?> updateUser(@RequestBody RequestUserInfo userInfo) {
+        userInfo.setUserId(loginService.getCurrentUser());
         userService.updateUserInfo(userInfo);
 
         return ApiResponse.createSuccess(userInfo);
     }
-
-
 }

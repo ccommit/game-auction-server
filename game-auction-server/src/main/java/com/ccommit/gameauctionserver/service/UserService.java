@@ -13,31 +13,23 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public void createUser(User user)
-    {
+    public boolean isExistId(String userId) {
+        return userMapper.isExistId(userId);
+    }
+
+    public void createUser(User user) {
         userMapper.createUser(user);
     }
 
-    public boolean checkUserID(String username)
-    {
-        return userMapper.checkUserID(username) != 0;
+    public boolean compareUserInfo(String userId, String password) {
+        return userMapper.getID(userId, password) != null;
     }
 
-    public boolean compareUserInfo(String userID, String password)
-    {
-        return userMapper.getID(userID,password) != null;
-    }
-    public int getID(String userID, String password)
-    {
-       return userMapper.getID(userID,password);
-    }
-    public RequestUserInfo findUserInfoByID(String userId)
-    {
+    public RequestUserInfo findUserInfoByID(String userId) {
         return userMapper.readUserInfo(userId);
     }
 
-    public void updateUserInfo(RequestUserInfo userInfo)
-    {
+    public void updateUserInfo(RequestUserInfo userInfo) {
         userMapper.updateUser(userInfo);
     }
 
