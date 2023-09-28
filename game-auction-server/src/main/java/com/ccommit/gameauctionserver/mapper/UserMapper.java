@@ -1,28 +1,17 @@
 package com.ccommit.gameauctionserver.mapper;
 
 import com.ccommit.gameauctionserver.dto.User;
+import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 
 @Mapper
 public interface UserMapper {
 
-    // ID 중복체크
-    int checkUserID(String userID);
-
-    // 회원가입
-    int getMaxID();
+    boolean isExistId(String userId);
     void createUser(User user);
-
-    // 로그인
-    Integer getID(String userID, String password);
-    User readUser(int id);
-
-    // 회원정보 수정
-    void updateUser(User user);
-
-    // 회원 탈퇴
+    Integer getID(String userId, String password);
+    void updateUser(RequestUserInfo userInfo);
     void deleteUser(User user);
-
-    void deleteAll();
+    RequestUserInfo readUserInfo(String userId);
 }
