@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ccommit.gameauctionserver.mapper.BidMapper">
+    <select id="isExistItemId" resultType="boolean">
+        SELECT EXISTS
+        (SELECT id FROM bid WHERE item_id = #{itemId})
+    </select>
+
+
     <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
         <selectKey keyProperty="id" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
@@ -32,11 +38,36 @@
         WHERE   id = LAST_INSERT_ID()
     </select>
 
-    <select id="readUserItemsToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
-        SELECT  *
-        FROM    bid
-        WHERE   seller_id = #{userId}
-    </select>
 
+    <select id="searchBidToItem" resultType="com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid">
+        SELECT
+                 b.id as id
+                ,i.name as name
+                ,i.equipment_level as equipmentLevel
+                ,i.property1 as property1
+                ,i.property2 as property2
+                ,b.price as price
+                ,b.present_price as presentPrice
+        FROM bid b
+        JOIN item i ON b.item_id = i.id
+        WHERE 1 = 1
+        <if test="minLevel != 0">
+            AND #{minLevel} &lt; i.equipment_level
+        </if>
+        <if test="maxLevel != 0">
+            AND #{maxLevel} &gt; i.equipment_level
+        </if>
+        <if test="maxPrice != 0">
+            AND #{maxPrice} &gt; b.price
+        </if>
+        <if test="minProperty1 != 0">
+            AND #{minProperty1} &lt; i.property1
+        </if>
+        <if test="minProperty2 != 0">
+            AND #{minProperty1} &lt; i.property2
+        </if>
+        LIMIT #{limitPage} OFFSET #{offset}
+
+    </select>
 
 </mapper>

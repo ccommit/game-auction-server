@@ -2,16 +2,20 @@ package com.ccommit.gameauctionserver.mapper;
 
 import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.Item;
+import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
+import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 
 import java.util.List;
 
 public interface BidMapper {
 
+    boolean isExistItemId(int itemId);
+
     void registrationItem(Bid bid);
 
     Bid readLastItemToBid();
 
-    List<Bid> readUserItemsToBid(String userId);
+    List<ResponseItemToBid> searchBidToItem(BidSearchFilter bidSearchFilter);
 
     void deleteItemToBid();
 }

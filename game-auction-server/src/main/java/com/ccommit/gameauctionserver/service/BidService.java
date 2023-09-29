@@ -1,6 +1,8 @@
 package com.ccommit.gameauctionserver.service;
 
 import com.ccommit.gameauctionserver.dto.Bid;
+import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
+import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,11 @@ public class BidService {
     @Autowired
     private BidMapper bidMapper;
 
+    public boolean isExistItemId(int itemId)
+    {
+        return bidMapper.isExistItemId(itemId);
+    }
+
     public void registrationItem(Bid bid)
     {
         bidMapper.registrationItem(bid);
@@ -24,13 +31,9 @@ public class BidService {
         return bidMapper.readLastItemToBid();
     }
 
-    public List<Bid> readUserItemsToBid(String userId)
-    {
-        return bidMapper.readUserItemsToBid(userId);
-    }
-    public void deleteItemToBid()
-    {
-        bidMapper.deleteItemToBid();
-    }
 
+    public List<ResponseItemToBid> searchItemsToBid(BidSearchFilter bid)
+    {
+        return bidMapper.searchBidToItem(bid);
+    }
 }
