@@ -30,7 +30,7 @@ public class BidController {
             throw new DuplicateUserException(bid.getItemId() + "는 이미 등록되어 있습니다.");
         }
 
-        String sellerId = loginService.getCurrentUser();
+        String sellerId = loginService.getCurrentUserFromSession();
         bid.setSellerId(sellerId);
         bidService.registrationItem(bid);
 

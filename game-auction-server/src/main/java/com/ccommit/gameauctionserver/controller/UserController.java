@@ -43,7 +43,7 @@ public class UserController {
         } else {
             loginService.loginUser(user.getUserId());
 
-            return ApiResponse.createSuccess(loginService.getCurrentUser());
+            return ApiResponse.createSuccess(loginService.getCurrentUserFromSession());
         }
     }
 
@@ -56,14 +56,14 @@ public class UserController {
     @GetMapping("/mypage")
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> mypage() {
-        RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUser());
+        RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUserFromSession());
         return ApiResponse.createSuccess(userInfo);
     }
 
     @PostMapping("/mypage/update")
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> updateUser(@RequestBody RequestUserInfo userInfo) {
-        userInfo.setUserId(loginService.getCurrentUser());
+        userInfo.setUserId(loginService.getCurrentUserFromSession());
         userService.updateUserInfo(userInfo);
 
         return ApiResponse.createSuccess(userInfo);

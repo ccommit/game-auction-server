@@ -19,7 +19,7 @@ public class LoginService {
         session.removeAttribute(USER_ID);
     }
 
-    public String getCurrentUser() {
+    public String getCurrentUserFromSession() {
         return (String) session.getAttribute(USER_ID);
     }
 }

@@ -67,7 +67,5 @@
             AND #{minProperty1} &lt; i.property2
         </if>
         LIMIT #{limitPage} OFFSET #{offset}
-
     </select>
-
 </mapper>
