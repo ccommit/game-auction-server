@@ -8,6 +8,7 @@ import com.ccommit.gameauctionserver.exception.ErrorCode;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import com.ccommit.gameauctionserver.mapper.ItemMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class BidService {
 
     private BidMapper bidMapper;
     private ItemMapper itemMapper;
+    private RedisTemplate<String,Object> redisTemplate;
 
     public void isExistItemId(int itemId) {
         if (bidMapper.isExistItemId(itemId) != null) {
@@ -44,6 +46,9 @@ public class BidService {
     }
 
     public List<ResponseItemToBid> searchItemsToBid(BidSearchFilter bid) {
+
+        redisTemplate.opsForValue().set("key",bid);
+
         return bidMapper.searchBidToItem(bid);
     }
 }

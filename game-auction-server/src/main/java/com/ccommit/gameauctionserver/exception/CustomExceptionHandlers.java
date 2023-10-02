@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class CustomExceptionHandlers {
 
     @ExceptionHandler(CustomException.class)
-    private ResponseEntity handCustomException(CustomException ex)
+    private ResponseEntity<?> handCustomException(CustomException ex)
     {
-        return new ResponseEntity(ex.getErrorCode().getMessage(),ex.getErrorCode().getStatus());
+        return new ResponseEntity<>(ex.getErrorCode().getMessage(),ex.getErrorCode().getStatus());
     }
 }

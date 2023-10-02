@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ResponseItemToBid {
+
     private int id;
 
     private String name;
