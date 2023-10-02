@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccommit.gameauctionserver.mapper.UserMapper">
+
+    <select id="isExistId" resultType="boolean">
+        SELECT EXISTS
+        (SELECT id FROM user WHERE user_id = #{userId})
+    </select>
+
+    <insert id="createUser" parameterType="com.ccommit.gameauctionserver.dto.User">
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO user ( user_id
+        ,password
+        ,nickname
+        ,phone_number
+        ,gold
+        ,user_level
+        ,user_type )
+
+        VALUES ( #{userId}
+        ,#{password}
+        ,#{nickname}
+        ,#{phoneNumber}
+        ,#{gold}
+        ,#{userLevel}
+        ,#{userType} );
+    </insert>
+
+    <select id="getID" parameterType="String" resultType="java.lang.Integer">
+        SELECT IFNULL(id,0) as id
+        FROM user
+        WHERE user_id = #{userId}
+        AND password = #{password}
+    </select>
+
+    <select id="readUserInfo" resultType="com.ccommit.gameauctionserver.dto.user.RequestUserInfo">
+        SELECT user_id as userId
+        ,nickname
+        ,phone_number as phoneNumber
+        ,gold
+        ,user_level as userLevel
+        ,user_type as userType
+        FROM user
+        WHERE user_id = #{user_Id}
+    </select>
+
+    <update id="updateUser" parameterType="com.ccommit.gameauctionserver.dto.user.RequestUserInfo">
+        UPDATE user
+        SET nickname = #{nickname},
+        phone_number = #{phoneNumber}
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>
