@@ -21,7 +21,7 @@ public class LoginCheckAspect {
     @Before("@annotation(com.ccommit.gameauctionserver.annotation.CheckLoginStatus) && @annotation(checkLogin)")
     public void loginCheck(CheckLoginStatus checkLogin) throws HttpClientErrorException
     {
-        String UserId = loginService.getCurrentUser();
+        String UserId = loginService.getCurrentUserFromSession();
 
         /*
         TODO :
@@ -35,7 +35,7 @@ public class LoginCheckAspect {
 
     private String getCurrentUser() throws HttpClientErrorException
     {
-        String userId = loginService.getCurrentUser();
+        String userId = loginService.getCurrentUserFromSession();
         if(userId == null){
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "ID가 없습니다.") {};
         }

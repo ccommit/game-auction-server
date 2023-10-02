@@ -8,24 +8,22 @@ import lombok.Getter;
 @Getter
 public class BidSearchFilter {
 
-    private final int LIMIT_PAGE = 20;
-    private final int OFFSET = 0;
-
     private String itemName;
 
-    private int minLevel;
-    private int maxLevel;
+    private Integer minLevel;
+    private Integer maxLevel;
 
-    private int maxPrice;
-    private int minProperty1;
-    private int minProperty2;
+    private Integer maxPrice;
+    private Integer minFirstProperty;
+    private Integer minSecondProperty;
 
     private ItemRating itemRating;
     private ItemMainCategory mainCategory;
     private ItemSubCategory subCategory;
 
     private BidSortingType bidSortingType;
+    private boolean desc;
 
-    private int limitPage = LIMIT_PAGE;
-    private int offset = OFFSET;
+    private int limitPage = 20;
+    private int offset = 0;
 }

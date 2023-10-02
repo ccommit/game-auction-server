@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BidMapper {
 
-    boolean isExistItemId(int itemId);
+    Integer isExistItemId(int itemId);
 
     void registrationItem(Bid bid);
 

@@ -16,8 +16,8 @@ public class Item {
     private ItemMainCategory mainType;
     private ItemSubCategory subType;
 
-    private int property1;
-    private int property2;
+    private int firstProperty;
+    private int secondProperty;
 
     private String itemImageURL;
     private int userId;

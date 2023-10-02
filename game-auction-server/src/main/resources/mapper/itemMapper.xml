@@ -13,8 +13,8 @@
                             ,rating
                             ,main_type
                             ,sub_type
-                            ,property1
-                            ,property2
+                            ,first_property
+                            ,second_property
                             ,item_image_url
                             ,user_id
                             ,is_Exist )
@@ -24,11 +24,19 @@
                             ,#{rating}
                             ,#{mainType}
                             ,#{subType}
-                            ,#{property1}
-                            ,#{property2}
+                            ,#{firstProperty}
+                            ,#{secondProperty}
                             ,#{itemImageURL}
                             ,#{userId}
                             ,#{exist});
     </insert>
+
+    <select id ="isUserItemId" resultType="java.lang.Integer">
+        SELECT  i.id
+        FROM    item i
+        JOIN    user u ON i.user_id = u.id
+        WHERE   i.id = #{itemId}
+        AND     u.user_id = #{userId}
+    </select>
 
 </mapper>

@@ -5,7 +5,6 @@ import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 import com.ccommit.gameauctionserver.dto.user.UserType;
-import com.ccommit.gameauctionserver.exception.DuplicateUserException;
 import com.ccommit.gameauctionserver.service.BidService;
 import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
@@ -26,13 +25,7 @@ public class BidController {
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> registerItemToBid(@RequestBody Bid bid) {
 
-        if(bidService.isExistItemId(bid.getItemId())) {
-            throw new DuplicateUserException(bid.getItemId() + "는 이미 등록되어 있습니다.");
-        }
-
-        String sellerId = loginService.getCurrentUser();
-        bid.setSellerId(sellerId);
-        bidService.registrationItem(bid);
+        bidService.registrationItem(bid, loginService.getCurrentUserFromSession());
 
         return ApiResponse.createSuccess(bidService.readLastItemToBid());
     }
