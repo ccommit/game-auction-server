@@ -96,7 +96,8 @@ __경매장 입찰 내역 조회__
 <details>
 <summary>경매장 ERD</summary>
 
-![image](https://github.com/ccommit/game-aution-server/assets/43266403/24e35f2d-d92f-4abe-b79b-1221c78172e6)
+![image](https://github.com/ccommit/game-aution-server/assets/43266403/ac8104a5-4be0-4ea7-be2d-e7063e58def9)
+
 
 
 </details>
