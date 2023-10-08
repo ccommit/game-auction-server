@@ -13,37 +13,38 @@
         <selectKey keyProperty="id" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO user (   user_id
-                            ,password
-                            ,nickname
-                            ,phone_number
-                            ,gold
-                            ,user_level
-                            ,user_type )
+        INSERT INTO user (  user_id,
+                            password,
+                            nickname,
+                            phone_number,
+                            gold,
+                            user_level,
+                            user_type )
 
-        VALUES           (   #{userId}
-                            ,#{password}
-                            ,#{nickname}
-                            ,#{phoneNumber}
-                            ,#{gold}
-                            ,#{userLevel}
-                            ,#{userType} );
+        VALUES           (  #{userId},
+                            #{password},
+                            #{nickname},
+                            #{phoneNumber},
+                            #{gold},
+                            #{userLevel},
+                            #{userType} );
     </insert>
 
     <select id="getID" parameterType="String" resultType="java.lang.Integer">
-    SELECT IFNULL(id,0) as id
-    FROM user
-    WHERE user_id = #{userId}
-    AND password = #{password}
+    SELECT      IFNULL(id,0) as id
+    FROM        user
+    WHERE       user_id = #{userId}
+    AND         password = #{password}
     </select>
 
     <select id="readUserInfo" resultType="com.ccommit.gameauctionserver.dto.user.RequestUserInfo">
-        SELECT   user_id as userId
-                ,nickname
-                ,phone_number as phoneNumber
-                ,gold
-                ,user_level as userLevel
-                ,user_type as userType
+        SELECT  id,
+                user_id AS userId,
+                nickname,
+                phone_number AS phoneNumber,
+                gold,
+                user_level AS userLevel,
+                user_type AS userType
         FROM    user
         WHERE   user_id = #{user_Id}
     </select>

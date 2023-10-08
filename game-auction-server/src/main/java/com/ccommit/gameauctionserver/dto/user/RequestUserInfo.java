@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class RequestUserInfo {
 
+    private int id;
     private String userId;
 
     private String nickname;
