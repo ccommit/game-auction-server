@@ -10,6 +10,7 @@ import com.ccommit.gameauctionserver.exception.ErrorCode;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import com.ccommit.gameauctionserver.mapper.ItemMapper;
 import com.ccommit.gameauctionserver.mapper.UserMapper;
+import com.ccommit.gameauctionserver.utils.BidMQProducer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class BidService {
     private UserMapper userMapper;
     private ItemMapper itemMapper;
     private BidItemDAO bidItemDAO;
+    private BidMQProducer bidMQProducer;
 
     public void isExistItemId(int itemId) {
         if (bidMapper.isExistItemId(itemId) != null) {
@@ -46,14 +48,6 @@ public class BidService {
 
         bid.setSellerId(userId);
         bidMapper.registrationItem(bid);
-    }
-
-    public Bid readItemWithBid(int bidId) {
-        Bid bidItem = bidItemDAO.readBidWithCache(bidId);
-        if (bidItem == null || bidItem.isSold()) {
-            throw new CustomException(ErrorCode.ITEM_FORBIDDEN);
-        }
-        return bidItem;
     }
 
     @Transactional
@@ -76,8 +70,8 @@ public class BidService {
         if(priceGold == bidItem.getPrice())
         {
             updateUserGold(bidItem, userId, priceGold);
-            bidMapper.updateInstantBid(userInfo.getId(), bidId);
-            //bidItemDAO.deleteDataWithCache(bidId);
+            bidMQProducer.ProduceBidData(userInfo.getId(),bidId);
+            bidItemDAO.deleteDataWithCache(bidId);
         }
         else
         {
