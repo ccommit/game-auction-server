@@ -39,62 +39,80 @@
         WHERE    id = LAST_INSERT_ID()
     </select>
 
-    <select id="searchBidToItem" resultType="com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid">
-        SELECT   b.id               AS id,
-                 i.name             AS name,
-                 i.equipment_level  AS equipmentLevel,
-                 i.first_property   AS firstProperty,
-                 i.second_property  AS secondProperty,
-                 i.item_image_url   AS itemImageURL,
-                 b.price            AS price,
-                 b.present_price    AS presentPrice
+    <select id="readBidWithItemID" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  id,
+        create_time         AS createTime,
+        limit_time          AS limitTime,
+        price               AS price,
+        start_price         AS startPrice,
+        present_price       AS presentPrice,
+        highestbidder_id    AS highestBidderId,
+        issold              AS isSold,
+        seller_id           AS sellerId,
+        item_id             AS itemId
+        FROM    bid
+        WHERE   id = #{id}
+
+    </select>
+
+
+    <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  b.id                  AS id,
+                b.create_time         AS createTime,
+                b.limit_time          AS limitTime,
+                b.price               AS price,
+                b.start_price         AS startPrice,
+                b.present_price       AS presentPrice,
+                b.highestbidder_id    AS highestBidderId,
+                b.issold              AS isSold,
+                b.item_id             AS itemId
         FROM     bid b
         JOIN     item i             ON b.item_id = i.id
         WHERE    1 = 1
         <if test="minLevel != null">
-                 AND #{minLevel} &lt; i.equipment_level
+            AND #{minLevel} &lt; i.equipment_level
         </if>
         <if test="maxLevel != null">
-                 AND #{maxLevel} &gt; i.equipment_level
+            AND #{maxLevel} &gt; i.equipment_level
         </if>
         <if test="maxPrice != null">
-                 AND #{maxPrice} &gt; b.price
+            AND #{maxPrice} &gt; b.price
         </if>
         <if test="minFirstProperty != null">
-                 AND #{minFirstProperty} &lt; i.first_property
+            AND #{minFirstProperty} &lt; i.first_property
         </if>
         <if test="minSecondProperty != null">
-                 AND #{minSecondProperty} &lt; i.second_property
+            AND #{minSecondProperty} &lt; i.second_property
         </if>
         <if test="itemRating != null">
-                 AND #{itemRating} = i.rating
+            AND #{itemRating} = i.rating
         </if>
         <if test="mainCategory != null">
-                 AND #{mainCategory} = i.main_type
+            AND #{mainCategory} = i.main_type
         </if>
         <if test="subCategory != null">
-                 AND #{subCategory} = 1.sub_type
+            AND #{subCategory} = 1.sub_type
         </if>
 
         <if test ="bidSortingType != null">
             <if test="bidSortingType == 'NAME'">
-                 ORDER BY i.name
+                ORDER BY i.name
             </if>
             <if test="bidSortingType.toString() == 'LIMIT_TIME'">
-                 ORDER BY b.limit_time
+                ORDER BY b.limit_time
             </if>
             <if test="bidSortingType.toString() == 'PRESENT_PRICE'">
-                 ORDER BY b.present_price
+                ORDER BY b.present_price
             </if>
             <if test="bidSortingType.toString() == 'PRICE'">
-                 ORDER BY b.price
+                ORDER BY b.price
             </if>
 
             <if test ="desc">
-                 DESC
+                DESC
             </if>
             <if test ="!desc">
-                 ASC
+                ASC
             </if>
         </if>
 

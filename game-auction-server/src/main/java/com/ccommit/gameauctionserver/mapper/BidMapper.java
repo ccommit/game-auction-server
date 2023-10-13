@@ -1,9 +1,7 @@
 package com.ccommit.gameauctionserver.mapper;
 
 import com.ccommit.gameauctionserver.dto.Bid;
-import com.ccommit.gameauctionserver.dto.Item;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
-import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public interface BidMapper {
 
     Bid readLastItemToBid();
 
-    List<ResponseItemToBid> searchBidToItem(BidSearchFilter bidSearchFilter);
+    Bid readBidWithItemID(int id);
 
-    void deleteItemToBid();
+    List<Bid> searchBidData(BidSearchFilter bidSearchFilter);
 }

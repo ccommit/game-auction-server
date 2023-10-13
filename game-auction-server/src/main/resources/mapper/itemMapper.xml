@@ -39,4 +39,20 @@
         AND     u.user_id = #{userId}
     </select>
 
+    <select id ="readItem" resultType="com.ccommit.gameauctionserver.dto.Item">
+        SELECT  id AS id,
+                name AS name,
+                equipment_level AS equipment_Level,
+                rating AS rating,
+                main_type AS mainType,
+                sub_type AS subType,
+                first_property AS firstProperty,
+                second_property AS secondProperty,
+                item_image_url AS itemImageURL,
+                user_id AS userId,
+                is_Exist AS exist
+        FROM    item
+        WHERE   id = #{itemId}
+    </select>
+
 </mapper>
