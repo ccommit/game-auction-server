@@ -3,9 +3,9 @@ package com.ccommit.gameauctionserver.controller;
 import com.ccommit.gameauctionserver.annotation.CheckLoginStatus;
 import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
-import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 import com.ccommit.gameauctionserver.dto.user.UserType;
 import com.ccommit.gameauctionserver.service.BidService;
+import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +31,7 @@ public class BidController {
     @PostMapping("/search")
     public ApiResponse<?> searchItem(@RequestBody BidSearchFilter bid)
     {
-        List<ResponseItemToBid> itemList = bidService.searchItemsToBid(bid);
-
-        return ApiResponse.createSuccess(itemList);
+        return ApiResponse.createSuccess(bidService.searchItemsToBid(bid));
     }
 
     @PostMapping("/{productId}")

@@ -99,7 +99,7 @@ public class BidItemDAO {
             String key = cursor.next();
             bidList.add(redisTemplate.opsForValue().get(key));
         }
-
+        cursor.close();
         return bidList;
     }
 }

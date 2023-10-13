@@ -1,7 +1,10 @@
 package com.ccommit.gameauctionserver.service;
 
 import com.ccommit.gameauctionserver.dao.BidItemDAO;
+import com.ccommit.gameauctionserver.dao.BidItemDAO;
+import com.ccommit.gameauctionserver.dao.ItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
+import com.ccommit.gameauctionserver.dto.Item;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid;
 import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
@@ -12,9 +15,11 @@ import com.ccommit.gameauctionserver.mapper.ItemMapper;
 import com.ccommit.gameauctionserver.mapper.UserMapper;
 import com.ccommit.gameauctionserver.utils.BidMQProducer;
 import lombok.AllArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +34,8 @@ public class BidService {
     private ItemMapper itemMapper;
     private BidItemDAO bidItemDAO;
     private BidMQProducer bidMQProducer;
+    private BidItemDAO bidItemDAO;
+    private ItemDAO itemDAO;
 
     public void isExistItemId(int itemId) {
         if (bidMapper.isExistItemId(itemId) != null) {
@@ -106,9 +113,20 @@ public class BidService {
         return bidMapper.readLastItemToBid();
     }
 
+    public List<Pair<Bid,Item>> searchItemsToBid(BidSearchFilter bid) {
 
-    public List<ResponseItemToBid> searchItemsToBid(BidSearchFilter bid) {
+        List<Bid> bidList = bidMapper.searchBidData(bid);
+        List<Pair<Bid,Item>> pairs = new ArrayList<>();
 
-        return bidMapper.searchBidToItem(bid);
+        for(Bid bids : bidList)
+        {
+            Bid resultBid = bidItemDAO.readBidWithCache(bids.getId());
+            Item resultItem = itemDAO.readItemWithCache(bids.getItemId());
+
+            Pair<Bid,Item> pair = Pair.of(resultBid,resultItem);
+            pairs.add(pair);
+        }
+
+        return pairs;
     }
 }
