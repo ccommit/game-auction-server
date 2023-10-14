@@ -10,4 +10,6 @@ public interface ItemMapper {
 
     Integer isUserItemId(int itemId, String userId);
 
+    Item readItem(int itemId);
+
 }

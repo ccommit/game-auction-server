@@ -55,15 +55,33 @@
 
     </select>
 
-    <select id="searchBidToItem" resultType="com.ccommit.gameauctionserver.dto.bid.ResponseItemToBid">
-        SELECT   b.id               AS id,
-                 i.name             AS name,
-                 i.equipment_level  AS equipmentLevel,
-                 i.first_property   AS firstProperty,
-                 i.second_property  AS secondProperty,
-                 i.item_image_url   AS itemImageURL,
-                 b.price            AS price,
-                 b.present_price    AS presentPrice
+    <select id="readBidWithItemID" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  id,
+        create_time         AS createTime,
+        limit_time          AS limitTime,
+        price               AS price,
+        start_price         AS startPrice,
+        present_price       AS presentPrice,
+        highestbidder_id    AS highestBidderId,
+        issold              AS isSold,
+        seller_id           AS sellerId,
+        item_id             AS itemId
+        FROM    bid
+        WHERE   id = #{id}
+
+    </select>
+
+
+    <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  b.id                  AS id,
+                b.create_time         AS createTime,
+                b.limit_time          AS limitTime,
+                b.price               AS price,
+                b.start_price         AS startPrice,
+                b.present_price       AS presentPrice,
+                b.highestbidder_id    AS highestBidderId,
+                b.issold              AS isSold,
+                b.item_id             AS itemId
         FROM     bid b
         JOIN     item i ON b.item_id = i.id
         WHERE    1 = 1
@@ -106,10 +124,10 @@
                 ORDER BY b.price
             </if>
 
-            <if test="desc">
+            <if test ="desc">
                 DESC
             </if>
-            <if test="!desc">
+            <if test ="!desc">
                 ASC
             </if>
         </if>

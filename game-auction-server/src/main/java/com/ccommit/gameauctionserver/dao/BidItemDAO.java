@@ -1,6 +1,7 @@
 package com.ccommit.gameauctionserver.dao;
 
 import com.ccommit.gameauctionserver.dto.Bid;
+import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
@@ -100,6 +101,7 @@ public class BidItemDAO {
             bidList.add(redisTemplate.opsForValue().get(key));
         }
 
+        cursor.close();
         return bidList;
     }
 }
