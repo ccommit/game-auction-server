@@ -17,7 +17,9 @@ public enum ErrorCode {
     USER_AUTHORITY(UNAUTHORIZED,"해당 기능의 권한이 없습니다"),
 
     BID_AUTHORITY(BAD_REQUEST, "등록된 물품은 사용자의 물품입니다."),
-    BID_CREDIT_CANCLED(BAD_REQUEST, "잘못된 금액입니다. 다시 시도해주세요.");
+    BID_CREDIT_CANCLED(BAD_REQUEST, "잘못된 금액입니다. 다시 시도해주세요."),
+
+    SERVER_INTERNAL(INTERNAL_SERVER_ERROR, "서버와의 연결이 끊겼습니다.");
 
     private final HttpStatus status;
     private final String message;

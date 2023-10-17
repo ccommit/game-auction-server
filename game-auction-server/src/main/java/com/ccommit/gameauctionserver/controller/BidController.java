@@ -5,7 +5,6 @@ import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.dto.user.UserType;
 import com.ccommit.gameauctionserver.service.BidService;
-import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ import java.util.Map;
 public class BidController {
 
     private final BidService bidService;
-    @PostMapping("/item")
+    @PostMapping("")
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> registerItemToBid(String userId, @RequestBody Bid bid) {
 

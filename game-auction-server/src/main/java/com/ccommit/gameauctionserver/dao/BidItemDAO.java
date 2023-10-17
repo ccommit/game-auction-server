@@ -1,6 +1,7 @@
 package com.ccommit.gameauctionserver.dao;
 
 import com.ccommit.gameauctionserver.dto.Bid;
+import com.ccommit.gameauctionserver.dto.bid.BidWithUserDTO;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
@@ -19,6 +20,7 @@ public class BidItemDAO {
     private final RedisTemplate<String, Bid> redisTemplate;
     private final BidMapper bidMapper;
     private static final String bidKey = ":BID";
+
 
     private String getTime() {
         return String.format("%02d", LocalTime.now().getHour());
@@ -45,17 +47,12 @@ public class BidItemDAO {
         }
     }
 
-    public void updateBidWithCache(int bidId, Bid bid) {
-        String key = readCacheKey(bidId);
+    public Bid UpdateCacheData(Bid bid) {
+        String key = readCacheKey(bid.getId());
 
-        redisTemplate.opsForValue().set(key, bid);
-    }
+        redisTemplate.opsForValue().set(key,bid);
 
-    public void deleteDataWithCache(int bidId) {
-        String key = readCacheKey(bidId);
-        if (key != null) {
-            redisTemplate.delete(key);
-        }
+        return bid;
     }
 
     /**

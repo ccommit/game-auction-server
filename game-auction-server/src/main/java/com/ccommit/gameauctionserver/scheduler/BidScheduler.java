@@ -3,6 +3,7 @@ package com.ccommit.gameauctionserver.scheduler;
 import com.ccommit.gameauctionserver.dao.BidItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
+import com.ccommit.gameauctionserver.mapper.SchedulingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.util.List;
 public class BidScheduler {
 
     private final BidItemDAO bidItemDAO;
-    private final BidMapper bidMapper;
+    private final SchedulingMapper schedulingMapper;
 
     /**
      * @Scheduled : 정해진 시간마다 반복된 처리를 하기위한 어노테이션
@@ -35,20 +36,20 @@ public class BidScheduler {
 
         for(Bid bidItem : bidItems)
         {
-            bidMapper.schedulingUpdateBidInfo(bidItem);
+            schedulingMapper.schedulingUpdateBidInfo(bidItem);
         }
     }
 
     @Scheduled(cron = "0 0 0/6 * * *")
     public void checkEndTimeWithBid()
     {
-        bidMapper.schedulingEndBid();
+        schedulingMapper.schedulingEndBid();
     }
 
     @Scheduled(cron = "0 0 0 1 * *")
     public void deleteItemWithBid()
     {
-        bidMapper.schedulingDelete();
+        schedulingMapper.schedulingDelete();
     }
 
 }

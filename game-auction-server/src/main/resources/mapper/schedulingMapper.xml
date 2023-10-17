@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccommit.gameauctionserver.mapper.SchedulingMapper">
+    <update id="schedulingUpdateBidInfo">
+        UPDATE  bid
+        SET
+        present_price = #{presentPrice},
+        highestbidder_id = #{highestBidderId}
+        WHERE   id = #{id}
+        AND     limit_time &gt; DATE()
+    </update>
+
+    <update id="schedulingEndBid">
+        UPDATE  bid     AS b
+        JOIN    item    AS i      ON b.item_id          = i.id              COLLATE utf8_unicode_ci
+        JOIN    user    AS seller ON b.seller_id        = seller.user_id    COLLATE utf8_unicode_ci
+        JOIN    user    AS bidder ON b.highestbidder_id = bidder.user_id    COLLATE utf8_unicode_ci
+        SET     seller.gold = seller.gold + b.present_price,
+                i.user_id   = bidder.id,
+                b.issold    = TRUE
+        WHERE   b.limit_time &lt; NOW()
+        AND     b.highestbidder_id IS NOT NULL
+        AND     b.issold = FALSE;
+    </update>
+
+    <delete id="schedulingDelete">
+        DELETE
+        FROM    bid
+        WHERE   limit_time &lt; NOW()
+        OR      issold = TRUE;
+    </delete>
+
+
+
+</mapper>
