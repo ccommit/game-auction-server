@@ -9,7 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -82,6 +85,30 @@ public class BidItemDAO {
         }
     }
 
+    public List<Bid> readSoldDataWithCache(){
+        ScanOptions scanOptions = ScanOptions.scanOptions()
+                .match("*" + bidKey)
+                .count(50)
+                .build();
+
+        Cursor<String> cursor = redisTemplate.scan(scanOptions);
+
+        List<Bid> bidList = new ArrayList<>();
+
+        while (cursor.hasNext())
+        {
+            String key = cursor.next();
+            Bid bid = redisTemplate.opsForValue().get(key);
+            if(!bid.isSold())
+            {
+                continue;
+            }
+            bidList.add(bid);
+        }
+        cursor.close();
+        return bidList;
+    }
+
     public List<Bid> readCacheDataWithTime(){
         String matchTime = getTime();
         ScanOptions scanOptions = ScanOptions.scanOptions()
@@ -90,7 +117,7 @@ public class BidItemDAO {
                 .build();
 
         Cursor<String> cursor = redisTemplate.scan(scanOptions);
-        List<Bid> bidList = null;
+        List<Bid> bidList = new ArrayList<>();
         while(cursor.hasNext())
         {
             String key = cursor.next();

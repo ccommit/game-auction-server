@@ -31,7 +31,4 @@
         WHERE   limit_time &lt; NOW()
         OR      issold = TRUE;
     </delete>
-
-
-
 </mapper>

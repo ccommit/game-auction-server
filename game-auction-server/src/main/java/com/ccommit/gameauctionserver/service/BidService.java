@@ -59,6 +59,7 @@ public class BidService {
 
     @Transactional
     public Bid updateItemWithBid(int bidId, String userId, int priceGold) {
+
         Bid bidItem = bidItemDAO.readBidWithCache(bidId);
         RequestUserInfo userInfo = userMapper.readUserInfo(userId);
 
@@ -87,6 +88,8 @@ public class BidService {
             }
         }
 
+
+/*
         Bid responseBid = Bid.builder()
                 .id(bidId)
                 .createTime(bidItem.getCreateTime())
@@ -99,8 +102,12 @@ public class BidService {
                 .isSold(priceGold==bidItem.getPrice())
                 .itemId(bidItem.getItemId())
                 .build();
+*/
 
-        return bidItemDAO.UpdateCacheData(responseBid);
+        bidItem.setPresentPrice(priceGold);
+        bidItem.setHighestBidderId(userId);
+        bidItem.setSold(priceGold == bidItem.getPrice());
+        return bidItemDAO.UpdateCacheData(bidItem);
     }
 
     public Bid readLastItemToBid() {

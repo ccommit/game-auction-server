@@ -10,7 +10,7 @@
         WHERE   item_id = #{itemId}
     </select>
 
-    <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
+    <insert id="registrationItem">
         <selectKey keyProperty="id" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -52,7 +52,6 @@
                 item_id             AS itemId
         FROM    bid
         WHERE   id = #{id}
-
     </select>
 
     <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">

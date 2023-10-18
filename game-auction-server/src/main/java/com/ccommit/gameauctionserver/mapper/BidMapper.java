@@ -17,11 +17,9 @@ public interface BidMapper {
 
     Bid readBidWithItemID(int id);
 
-
     void updateUserGold(String userId, int priceGold);
 
     void updateInstantBid(int userId, int bidId);
-
 
     List<Bid> searchBidData(BidSearchFilter bidSearchFilter);
 }
