@@ -3,40 +3,120 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ccommit.gameauctionserver.mapper.BidMapper">
+
+    <select id="isExistItemId" resultType="java.lang.Integer">
+        SELECT  id
+        FROM    bid
+        WHERE   item_id = #{itemId}
+    </select>
+
     <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
         <selectKey keyProperty="id" order="AFTER" resultType="int">
-            SELECT LAST_INSERT_ID()
+                            SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO bid (    create_time
-                            ,limit_time
-                            ,price
-                            ,start_price
-                            ,present_price
-                            ,seller_id
-                            ,issold
-                            ,item_id)
+        INSERT INTO bid (   create_time,
+                            limit_time,
+                            price,
+                            start_price,
+                            present_price,
+                            seller_id,
+                            issold,
+                            item_id)
 
-        VALUES (             NOW()
-                            ,DATE_ADD(NOW(), INTERVAL 1 DAY)
-                            ,#{price}
-                            ,#{startPrice}
-                            ,#{startPrice}
-                            ,#{sellerId}
-                            ,#{isSold}
-                            ,#{itemId});
+        VALUES (            NOW(),
+                            DATE_ADD(NOW(), INTERVAL 1 DAY),
+                            #{price},
+                            #{startPrice},
+                            #{startPrice},
+                            #{sellerId},
+                            #{isSold},
+                            #{itemId});
     </insert>
 
     <select id="readLastItemToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
-        SELECT  *
-        FROM    bid
-        WHERE   id = LAST_INSERT_ID()
+        SELECT   *
+        FROM     bid
+        WHERE    id = LAST_INSERT_ID()
     </select>
 
-    <select id="readUserItemsToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
-        SELECT  *
+    <select id="readBidWithItemID" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  id,
+        create_time         AS createTime,
+        limit_time          AS limitTime,
+        price               AS price,
+        start_price         AS startPrice,
+        present_price       AS presentPrice,
+        highestbidder_id    AS highestBidderId,
+        issold              AS isSold,
+        seller_id           AS sellerId,
+        item_id             AS itemId
         FROM    bid
-        WHERE   seller_id = #{userId}
+        WHERE   id = #{id}
+
     </select>
 
+
+    <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">
+        SELECT  b.id                  AS id,
+                b.create_time         AS createTime,
+                b.limit_time          AS limitTime,
+                b.price               AS price,
+                b.start_price         AS startPrice,
+                b.present_price       AS presentPrice,
+                b.highestbidder_id    AS highestBidderId,
+                b.issold              AS isSold,
+                b.item_id             AS itemId
+        FROM     bid b
+        JOIN     item i             ON b.item_id = i.id
+        WHERE    1 = 1
+        <if test="minLevel != null">
+            AND #{minLevel} &lt; i.equipment_level
+        </if>
+        <if test="maxLevel != null">
+            AND #{maxLevel} &gt; i.equipment_level
+        </if>
+        <if test="maxPrice != null">
+            AND #{maxPrice} &gt; b.price
+        </if>
+        <if test="minFirstProperty != null">
+            AND #{minFirstProperty} &lt; i.first_property
+        </if>
+        <if test="minSecondProperty != null">
+            AND #{minSecondProperty} &lt; i.second_property
+        </if>
+        <if test="itemRating != null">
+            AND #{itemRating} = i.rating
+        </if>
+        <if test="mainCategory != null">
+            AND #{mainCategory} = i.main_type
+        </if>
+        <if test="subCategory != null">
+            AND #{subCategory} = 1.sub_type
+        </if>
+
+        <if test ="bidSortingType != null">
+            <if test="bidSortingType == 'NAME'">
+                ORDER BY i.name
+            </if>
+            <if test="bidSortingType.toString() == 'LIMIT_TIME'">
+                ORDER BY b.limit_time
+            </if>
+            <if test="bidSortingType.toString() == 'PRESENT_PRICE'">
+                ORDER BY b.present_price
+            </if>
+            <if test="bidSortingType.toString() == 'PRICE'">
+                ORDER BY b.price
+            </if>
+
+            <if test ="desc">
+                DESC
+            </if>
+            <if test ="!desc">
+                ASC
+            </if>
+        </if>
+
+        LIMIT #{limitPage} OFFSET #{offset}
+    </select>
 
 </mapper>

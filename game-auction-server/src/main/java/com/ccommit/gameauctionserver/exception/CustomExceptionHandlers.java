@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomExceptionHandlers {
 
-    @ExceptionHandler(DuplicateUserException.class)
-    private ResponseEntity handleDuplicateUserException(DuplicateUserException ex) {
-
-        return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(CustomException.class)
+    private ResponseEntity<?> handCustomException(CustomException ex)
+    {
+        return new ResponseEntity<>(ex.getErrorCode().getMessage(),ex.getErrorCode().getStatus());
     }
-
 }

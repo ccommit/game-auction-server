@@ -4,7 +4,8 @@ import com.ccommit.gameauctionserver.annotation.CheckLoginStatus;
 import com.ccommit.gameauctionserver.dto.User;
 import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import com.ccommit.gameauctionserver.dto.user.UserType;
-import com.ccommit.gameauctionserver.exception.DuplicateUserException;
+import com.ccommit.gameauctionserver.exception.CustomException;
+import com.ccommit.gameauctionserver.exception.ErrorCode;
 import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.service.UserService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
@@ -26,7 +27,7 @@ public class UserController {
         boolean isExist = userService.isExistId(user.getUserId());
 
         if (isExist) {
-            throw new DuplicateUserException( "Duplicate ID : " + user.getUserId());
+            throw new CustomException(ErrorCode.USER_DUPLICATED);
         }
 
         userService.createUser(user);
@@ -43,7 +44,7 @@ public class UserController {
         } else {
             loginService.loginUser(user.getUserId());
 
-            return ApiResponse.createSuccess(loginService.getCurrentUser());
+            return ApiResponse.createSuccess(loginService.getCurrentUserFromSession());
         }
     }
 
@@ -56,14 +57,14 @@ public class UserController {
     @GetMapping("/mypage")
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> mypage() {
-        RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUser());
+        RequestUserInfo userInfo = userService.findUserInfoByID(loginService.getCurrentUserFromSession());
         return ApiResponse.createSuccess(userInfo);
     }
 
     @PostMapping("/mypage/update")
     @CheckLoginStatus(userType = UserType.USER)
     public ApiResponse<?> updateUser(@RequestBody RequestUserInfo userInfo) {
-        userInfo.setUserId(loginService.getCurrentUser());
+        userInfo.setUserId(loginService.getCurrentUserFromSession());
         userService.updateUserInfo(userInfo);
 
         return ApiResponse.createSuccess(userInfo);
