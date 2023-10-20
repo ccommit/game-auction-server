@@ -34,7 +34,16 @@
     </insert>
 
     <select id="readLastItemToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
-        SELECT  *
+        SELECT  id                  AS id,
+                create_time         AS createTime,
+                limit_time          AS limitTime,
+                price               AS price,
+                start_price         AS startPrice,
+                present_price       AS presentPrice,
+                highestbidder_id    AS highestBidderId,
+                issold              AS isSold,
+                seller_id           AS sellerId,
+                item_id             AS itemId
         FROM    bid
         WHERE   id = LAST_INSERT_ID()
     </select>

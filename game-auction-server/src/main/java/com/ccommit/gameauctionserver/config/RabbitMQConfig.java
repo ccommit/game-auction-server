@@ -5,18 +5,12 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
-import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.backoff.ExponentialBackOffPolicy;
-import org.springframework.retry.interceptor.MethodInvocationRecoverer;
 import org.springframework.retry.interceptor.RetryInterceptorBuilder;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 
 /**
 * Kafka : Message Queue중의 하나로, Cluster내의 Topic을 사용하여 메시지를 처리하는 분산 시스템
@@ -98,7 +92,11 @@ public class RabbitMQConfig {
         return connectionFactory;
     }
 
-/*  TODO : DLQ를 사용하기위한 ContainerFactory 설정 중 recoverer 관련 및 추가 설정 확인중입니다.
+/*    TODO : 메시지 재전송 처리를 위한 recoverer는 MethodInvocationRecoverer<?>형으로 형변환이 필요합니다.
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2023-10-21T01:44:15.618+09:00 ERROR 19856 --- [           main] o.s.boot.SpringApplication               : Application run failed
+오류가 발생중입니다.
+     * */
     @Bean
     public SimpleRabbitListenerContainerFactory retryContainerFactory(ConnectionFactory connectionFactory){
 
@@ -108,11 +106,11 @@ public class RabbitMQConfig {
                 RetryInterceptorBuilder.stateless()
                                        .maxAttempts(3)
                                        .backOffOptions(1000,2,2000)
-                                       .recoverer((MethodInvocationRecoverer<?>) new RejectAndDontRequeueRecoverer())
+                                       //.recoverer(new RejectAndDontRequeueRecoverer())
                                        .build());
 
         return containerFactory;
-    }*/
+    }
 
 
     /**
