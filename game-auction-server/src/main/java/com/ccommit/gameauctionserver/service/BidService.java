@@ -56,7 +56,17 @@ public class BidService {
         bid.setSellerId(userId);
         bidMapper.registrationItem(bid);
     }
-
+    /** @Transactional : 비즈니스 로직이 트랜잭션 처리를 필요로 할때 사용하는 어노테이션으로 내부적으로 AOP를 통해 트랜잭션을 프록시 방식으로 동작합니다.
+     * AOP 형식 : JDK Dynamic Proxy (인터페이스 확장시에), CGLIB (인터페이스 사용하지 않을 시)
+     * JDBC에서 필요한 dataSource.getConnection(), connection.setAutoCommit, coonection.coomit, coonection.rollback 등
+     * 트랜잭션시의 필요한 공통적인 관심사를 @Transactional를 통해 관리할 수 있습니다.
+     * 또한 Attribute를 설정하여 롤백범위, 트랜잭션 전파, 트랜잭션 격리수준 등을 설정할 수 있습니다.
+     * (propagation = Progation.REQUIRED등) : 트랜잭션 전파를 설정할 때 사용합니다.
+     * (isolation = Isolation.REPEATABLE_READ등) :  격리수준을 설정할 때 사용합니다.
+     * (noRollbackFor,rollbackFor) : 특정 예외가 발생하는 클래스에 대해 롤백 수행을 정의합니다.
+     * (timeout=-1) : 메서드 수행 시간을 설정합니다. (-1는 무제한, 기본값)
+     * (readOnly) : 트랜잭션을 읽기 전용으로 사용합니다. 읽기 만 할 경우 처리속도를 높이기 위해 사용합니다.
+    * */
     @Transactional
     public Bid updateItemWithBid(int bidId, String userId, int priceGold) {
         Bid bidItem = bidItemDAO.readBidWithCache(bidId);
