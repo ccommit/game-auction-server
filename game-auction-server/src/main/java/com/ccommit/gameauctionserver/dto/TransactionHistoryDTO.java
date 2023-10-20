@@ -1,17 +1,16 @@
 package com.ccommit.gameauctionserver.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
 
 @Getter
-@Builder
-public class MyResentTrade {
+public class TransactionHistoryDTO {
     private int id;
-    private int price;
+    private int tradePrice;
     private int itemId;
 
     private String sellerId;
+    private String buyerId;
     private Date saleTime;
 }

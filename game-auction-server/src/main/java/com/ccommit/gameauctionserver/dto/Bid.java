@@ -6,7 +6,6 @@ import java.util.Date;
 
 @Getter
 @Setter
-//@Builder
 public class Bid {
 
     private int id;

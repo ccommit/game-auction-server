@@ -17,8 +17,7 @@ public class BidMQConsumer {
     public void receiveMessageQueueWithBidData(BidWithUserDTO bidWithUserDTO) {
 
         if (bidWithUserDTO.getPirceGold() == bidWithUserDTO.getBid().getPrice()) {
-            bidMapper.updateInstantBid(bidWithUserDTO.getUserInfo().getId(),
-                                    bidWithUserDTO.getBid().getId());
+            bidMapper.updateInstantBid(bidWithUserDTO);
 
         }
 

@@ -2,15 +2,12 @@ package com.ccommit.gameauctionserver.scheduler;
 
 import com.ccommit.gameauctionserver.dao.BidItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
-import com.ccommit.gameauctionserver.dto.MyResentTrade;
-import com.ccommit.gameauctionserver.mapper.BidMapper;
-import com.ccommit.gameauctionserver.mapper.MyResentMapper;
 import com.ccommit.gameauctionserver.mapper.SchedulingMapper;
+import com.ccommit.gameauctionserver.mapper.TransactionHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,7 +17,7 @@ public class BidScheduler {
 
     private final BidItemDAO bidItemDAO;
     private final SchedulingMapper schedulingMapper;
-    private final MyResentMapper myResentMapper;
+    private final TransactionHistoryMapper transactionHistoryMapper;
 
     /**
      * @Scheduled : 정해진 시간마다 반복된 처리를 하기위한 어노테이션
@@ -54,15 +51,10 @@ public class BidScheduler {
     public void deleteBidAndInsertMyResentTrade()
     {
         //TODO : 데이터 중복삽입 방지 캐시데이터 조회후삭제 혹은 다른방법 찾아보기
-        List<Bid> myResentTradeWithBidList = bidItemDAO.readSoldDataWithCache();
-        if (!myResentTradeWithBidList.isEmpty()) {
-            myResentMapper.insertMyResentTradeWithBid(myResentTradeWithBidList);
+        List<Bid> transactionHistoryList = bidItemDAO.readSoldDataWithCache();
+        if (!transactionHistoryList.isEmpty()) {
+            transactionHistoryMapper.insertTransactionHistory(transactionHistoryList);
         }
         schedulingMapper.schedulingDelete();
-    }
-
-    @Scheduled(cron = "0 0/1 * * * *")
-    public  void test() {
-
     }
 }

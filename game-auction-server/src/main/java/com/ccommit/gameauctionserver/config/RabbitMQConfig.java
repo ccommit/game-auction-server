@@ -98,7 +98,8 @@ public class RabbitMQConfig {
         return connectionFactory;
     }
 
-/*    @Bean
+/*  TODO : DLQ를 사용하기위한 ContainerFactory 설정 중 recoverer 관련 및 추가 설정 확인중입니다.
+    @Bean
     public SimpleRabbitListenerContainerFactory retryContainerFactory(ConnectionFactory connectionFactory){
 
         var containerFactory = new SimpleRabbitListenerContainerFactory();
@@ -107,7 +108,7 @@ public class RabbitMQConfig {
                 RetryInterceptorBuilder.stateless()
                                        .maxAttempts(3)
                                        .backOffOptions(1000,2,2000)
-                                       .recoverer(new RejectAndDontRequeueRecoverer())
+                                       .recoverer((MethodInvocationRecoverer<?>) new RejectAndDontRequeueRecoverer())
                                        .build());
 
         return containerFactory;

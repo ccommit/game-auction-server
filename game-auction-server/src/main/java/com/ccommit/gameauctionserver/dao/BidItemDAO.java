@@ -1,7 +1,6 @@
 package com.ccommit.gameauctionserver.dao;
 
 import com.ccommit.gameauctionserver.dto.Bid;
-import com.ccommit.gameauctionserver.dto.bid.BidWithUserDTO;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
@@ -9,11 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Repository
@@ -125,5 +121,33 @@ public class BidItemDAO {
         }
         cursor.close();
         return bidList;
+    }
+
+    public Map<String,Bid> readCacheData(){
+        ScanOptions scanOptions = ScanOptions.scanOptions()
+                .match("*" + bidKey)
+                .count(50)
+                .build();
+
+        Cursor<String> cursor = redisTemplate.scan(scanOptions);
+
+        Map<String,Bid> bidMap = new HashMap<>();
+
+        while (cursor.hasNext())
+        {
+            String key = cursor.next();
+            Bid bid = redisTemplate.opsForValue().get(key);
+            if(!bid.isSold())
+            {
+                continue;
+            }
+            bidMap.put(key,bid);
+        }
+        cursor.close();
+        return bidMap;
+    }
+
+    public void deleteCacheData(){
+        //redisTemplate.delete()
     }
 }
