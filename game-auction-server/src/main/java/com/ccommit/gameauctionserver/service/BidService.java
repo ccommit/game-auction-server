@@ -6,6 +6,7 @@ import com.ccommit.gameauctionserver.dao.ItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.Item;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
+import com.ccommit.gameauctionserver.dto.bid.BidStatus;
 import com.ccommit.gameauctionserver.dto.bid.BidWithUserDTO;
 import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import com.ccommit.gameauctionserver.exception.CustomException;
@@ -73,7 +74,7 @@ public class BidService {
         Bid bidItem = bidItemDAO.readBidWithCache(bidId);
         RequestUserInfo userInfo = userMapper.readUserInfo(userId);
 
-        if (bidItem == null || bidItem.isSold()) {
+        if (bidItem == null || !(bidItem.getBidStatus().equals(BidStatus.SALE))) {
             throw new CustomException(ErrorCode.ITEM_FORBIDDEN);
         } else if (bidItem.getSellerId().equals(userId) || userId.equals(bidItem.getHighestBidderId())) {
             throw new CustomException(ErrorCode.BID_AUTHORITY);
@@ -97,7 +98,7 @@ public class BidService {
 
         bidItem.setPresentPrice(priceGold);
         bidItem.setHighestBidderId(userId);
-        bidItem.setSold(priceGold == bidItem.getPrice());
+        bidItem.setBidStatus(priceGold == bidItem.getPrice() ? BidStatus.SOLD_OUT : BidStatus.SALE);
         return bidItemDAO.UpdateCacheData(bidItem);
     }
 

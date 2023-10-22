@@ -5,32 +5,20 @@ import com.ccommit.gameauctionserver.dto.user.UserType;
 import com.ccommit.gameauctionserver.service.TransactionHistoryService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/trade")
+@RequestMapping("/histories")
 public class TransactionHistoryController {
 
     private final TransactionHistoryService transactionHistoryService;
 
-    @GetMapping("")
+    @PostMapping("")
     @CheckLoginStatus(userType = UserType.USER)
-    public ApiResponse<?> mytrade(String userId)
+    public ApiResponse<?> transactionHistoryData(String userId, @RequestParam("itemName") String itemName)
     {
-        return ApiResponse.createSuccess(transactionHistoryService.loadTransactionHistoryByUserId(userId));
-    }
-
-    @GetMapping("/{itemName}")
-    @CheckLoginStatus(userType = UserType.USER)
-    public ApiResponse<?> transactionHistoryByItemName(String userId, @PathVariable("itemName") String itemName)
-    {
-
-
-        return ApiResponse.createSuccess(transactionHistoryService.loadTransactionHistoryByItemName(itemName));
+        return ApiResponse.createSuccess(transactionHistoryService.loadTransactionHistoryData(userId, itemName));
     }
 
 }
