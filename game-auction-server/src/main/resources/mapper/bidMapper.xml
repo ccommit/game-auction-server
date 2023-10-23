@@ -12,7 +12,7 @@
 
     <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
         <selectKey keyProperty="id" order="AFTER" resultType="int">
-                            SELECT LAST_INSERT_ID()
+            SELECT LAST_INSERT_ID()
         </selectKey>
         INSERT INTO bid (   create_time,
                             limit_time,
@@ -23,7 +23,7 @@
                             issold,
                             item_id)
 
-        VALUES (            NOW(),
+        VALUES          (   NOW(),
                             DATE_ADD(NOW(), INTERVAL 1 DAY),
                             #{price},
                             #{startPrice},
@@ -34,27 +34,35 @@
     </insert>
 
     <select id="readLastItemToBid" resultType="com.ccommit.gameauctionserver.dto.Bid">
-        SELECT   *
-        FROM     bid
-        WHERE    id = LAST_INSERT_ID()
+        SELECT  id                  AS id,
+                create_time         AS createTime,
+                limit_time          AS limitTime,
+                price               AS price,
+                start_price         AS startPrice,
+                present_price       AS presentPrice,
+                highestbidder_id    AS highestBidderId,
+                issold              AS isSold,
+                seller_id           AS sellerId,
+                item_id             AS itemId
+        FROM    bid
+        WHERE   id = LAST_INSERT_ID()
     </select>
 
     <select id="readBidWithItemID" resultType="com.ccommit.gameauctionserver.dto.Bid">
         SELECT  id,
-        create_time         AS createTime,
-        limit_time          AS limitTime,
-        price               AS price,
-        start_price         AS startPrice,
-        present_price       AS presentPrice,
-        highestbidder_id    AS highestBidderId,
-        issold              AS isSold,
-        seller_id           AS sellerId,
-        item_id             AS itemId
+                create_time         AS createTime,
+                limit_time          AS limitTime,
+                price               AS price,
+                start_price         AS startPrice,
+                present_price       AS presentPrice,
+                highestbidder_id    AS highestBidderId,
+                issold              AS isSold,
+                seller_id           AS sellerId,
+                item_id             AS itemId
         FROM    bid
         WHERE   id = #{id}
 
     </select>
-
 
     <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">
         SELECT  b.id                  AS id,
@@ -67,7 +75,7 @@
                 b.issold              AS isSold,
                 b.item_id             AS itemId
         FROM     bid b
-        JOIN     item i             ON b.item_id = i.id
+        JOIN     item i ON b.item_id = i.id
         WHERE    1 = 1
         <if test="minLevel != null">
             AND #{minLevel} &lt; i.equipment_level
@@ -94,7 +102,7 @@
             AND #{subCategory} = 1.sub_type
         </if>
 
-        <if test ="bidSortingType != null">
+        <if test="bidSortingType != null">
             <if test="bidSortingType == 'NAME'">
                 ORDER BY i.name
             </if>
@@ -119,4 +127,21 @@
         LIMIT #{limitPage} OFFSET #{offset}
     </select>
 
+    <update id="updateUserGold">
+        UPDATE      user
+        SET         gold    = gold + #{priceGold}
+        WHERE       user_id = #{userId}
+    </update>
+
+    <update id="updateInstantBid">
+        UPDATE  bid     AS b
+        JOIN    item    AS i       ON b.item_id     = i.id            COLLATE utf8_unicode_ci
+        JOIN    user    AS seller  ON b.seller_id   = seller.user_id  COLLATE utf8_unicode_ci
+        SET     i.user_id = #{userId},
+                seller.gold = seller.gold + b.price,
+                b.issold = TRUE
+        WHERE   b.id = #{bidId}
+        AND     b.limit_time &gt; NOW()
+        AND     b.issold = FALSE;
+    </update>
 </mapper>

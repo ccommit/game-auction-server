@@ -5,10 +5,12 @@ import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.dto.user.UserType;
 import com.ccommit.gameauctionserver.service.BidService;
-import com.ccommit.gameauctionserver.service.LoginService;
 import com.ccommit.gameauctionserver.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/bids")
@@ -16,21 +18,27 @@ import org.springframework.web.bind.annotation.*;
 public class BidController {
 
     private final BidService bidService;
-    private final LoginService loginService;
-
-    @PostMapping("/item")
+    @PostMapping("")
     @CheckLoginStatus(userType = UserType.USER)
-    public ApiResponse<?> registerItemToBid(@RequestBody Bid bid) {
+    public ApiResponse<?> registerItemToBid(String userId, @RequestBody Bid bid) {
 
-        bidService.registrationItem(bid, loginService.getCurrentUserFromSession());
+        bidService.registrationItem(bid, userId);
 
         return ApiResponse.createSuccess(bidService.readLastItemToBid());
     }
-
 
     @PostMapping("/search")
     public ApiResponse<?> searchItem(@RequestBody BidSearchFilter bid)
     {
         return ApiResponse.createSuccess(bidService.searchItemsToBid(bid));
+    }
+
+    @PostMapping("/{productId}")
+    @CheckLoginStatus(userType = UserType.USER)
+    public ApiResponse<?> bidSelectItem(String userId, @PathVariable("productId") int bidId,
+                                    @RequestBody Map<String,Integer> param)
+    {
+        Bid bid = bidService.updateItemWithBid(bidId,userId, param.get("priceGold"));
+        return ApiResponse.createSuccess(bid);
     }
 }

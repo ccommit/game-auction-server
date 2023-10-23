@@ -26,4 +26,5 @@ public class BidSearchFilter {
 
     private int limitPage = 20;
     private int offset = 0;
+
 }
