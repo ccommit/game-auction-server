@@ -32,18 +32,6 @@
         </foreach>
     </insert>
 
-    <select id="readTransactionHistoryByUserId" resultType="com.ccommit.gameauctionserver.dto.TransactionHistoryDTO">
-        SELECT      id,
-                    seller_id   AS sellerId,
-                    buyer_id    AS buyerId,
-                    sale_time   AS saleTime,
-                    trade_price AS tradePrice,
-                    item_id     AS itemId
-        FROM        transactionhistory
-        WHERE       seller_id = #{userId}
-        OR          buyer_id  = #{userId}
-    </select>
-
     <select id="readTransactionHistoryData" resultType="com.ccommit.gameauctionserver.dto.TransactionHistoryDTO">
         SELECT  history.id,
                 history.seller_id   AS sellerId,
@@ -62,18 +50,6 @@
                 OR      history.buyer_id  = #{userId}
             </otherwise>
         </choose>
-    </select>
-
-    <select id="readTransactionHistoryByItemName" resultType="com.ccommit.gameauctionserver.dto.TransactionHistoryDTO">
-        SELECT      history.id,
-                    history.seller_id   AS sellerId,
-                    history.buyer_id    AS buyerId,
-                    history.sale_time   AS saleTime,
-                    history.trade_price AS tradePrice,
-                    history.item_id     AS itemId
-        FROM        transactionhistory history
-        JOIN        item i ON history.item_id = i.id
-        WHERE       i.name = #{itemName}
     </select>
 
 </mapper>

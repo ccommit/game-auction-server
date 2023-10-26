@@ -3,9 +3,11 @@ package com.ccommit.gameauctionserver.dto;
 import com.ccommit.gameauctionserver.dto.item.ItemMainCategory;
 import com.ccommit.gameauctionserver.dto.item.ItemRating;
 import com.ccommit.gameauctionserver.dto.item.ItemSubCategory;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class Item {
 
     private int id;

@@ -20,7 +20,6 @@
                             start_price,
                             present_price,
                             seller_id,
-                            sale_status,
                             item_id)
 
         VALUES          (   NOW(),
@@ -29,7 +28,6 @@
                             #{startPrice},
                             #{startPrice},
                             #{sellerId},
-                            'SALE',
                             #{itemId});
     </insert>
 

@@ -1,13 +1,10 @@
 package com.ccommit.gameauctionserver.service;
 
-import com.ccommit.gameauctionserver.dto.Bid;
 import com.ccommit.gameauctionserver.dto.SanctionHistoryDTO;
 import com.ccommit.gameauctionserver.dto.admin.SanctionReasonType;
 import com.ccommit.gameauctionserver.dto.bid.BidStatus;
-import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import com.ccommit.gameauctionserver.dto.user.UserType;
 import com.ccommit.gameauctionserver.mapper.AdminMapper;
-import com.ccommit.gameauctionserver.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
