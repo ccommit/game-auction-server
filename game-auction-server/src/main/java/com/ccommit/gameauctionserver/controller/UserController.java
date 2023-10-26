@@ -25,11 +25,9 @@ public class UserController {
     public ApiResponse<?> signUp(@RequestBody User user) {
         boolean isExist = userService.isExistId(user.getUserId());
 
-        if (isExist) {
-            throw new CustomException(ErrorCode.USER_DUPLICATED);
+        if(!isExist) {
+            userService.createUser(user);
         }
-
-        userService.createUser(user);
         return ApiResponse.createSuccess(user);
     }
 
@@ -38,13 +36,10 @@ public class UserController {
         boolean checkInfo = false;
         checkInfo = userService.compareUserInfo(user.getUserId(), user.getPassword());
 
-        if (!checkInfo) {
-            return ApiResponse.createError("Wrong : ID or Password");
-        } else {
+        if (checkInfo) {
             SessionUtil.loginUser(httpSession, user.getUserId(), userService.findUserInfoByID(user.getUserId()));
-
-            return ApiResponse.createSuccess(SessionUtil.getCurrentUserFromSession(httpSession));
         }
+        return ApiResponse.createSuccess(SessionUtil.getCurrentUserFromSession(httpSession));
     }
 
     @PostMapping("/logout")
@@ -66,6 +61,7 @@ public class UserController {
         userInfo.setUserId(userId);
         userService.updateUserInfo(userInfo);
 
+        userInfo = userService.findUserInfoByID(userId);
         return ApiResponse.createSuccess(userInfo);
     }
 }

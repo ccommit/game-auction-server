@@ -14,22 +14,6 @@ public class TransactionHistoryService {
     @Autowired
     TransactionHistoryMapper transactionHistoryMapper;
 
-    public List<TransactionHistoryDTO> loadTransactionHistoryByUserId(String userId)
-    {
-        List<TransactionHistoryDTO> transactionHistoryDTOList = new ArrayList<>();
-        transactionHistoryDTOList = transactionHistoryMapper.readTransactionHistoryByUserId(userId);
-
-        return transactionHistoryDTOList;
-    }
-
-    public List<TransactionHistoryDTO> loadTransactionHistoryByItemName(String itemName)
-    {
-        List<TransactionHistoryDTO> transactionHistoryDTOList = new ArrayList<>();
-        transactionHistoryDTOList = transactionHistoryMapper.readTransactionHistoryByItemName(itemName);
-
-        return transactionHistoryDTOList;
-    }
-
     public List<TransactionHistoryDTO> loadTransactionHistoryData(String userId, String itemName)
     {
         if(itemName.equals(""))

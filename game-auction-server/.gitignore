@@ -1,7 +1,5 @@
 game-auction-server\
-build\
-.gradle\
-out\
-.idea\
-
-
+/.gradle/
+/build/
+/out/
+/.idea/

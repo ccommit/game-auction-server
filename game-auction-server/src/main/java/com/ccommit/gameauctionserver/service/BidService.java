@@ -44,7 +44,7 @@ public class BidService {
         }
     }
 
-    private void isUserItemId(int itemId, String userId) {
+    public void isUserItemId(int itemId, String userId) {
         if (itemMapper.isUserItemId(itemId, userId) == null) {
             throw new CustomException(ErrorCode.ITEM_FORBIDDEN);
         }

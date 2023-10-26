@@ -48,9 +48,10 @@ public class BidScheduler {
     }
 
     @Scheduled(cron = "0 0 0 1 * *")
-    public void deleteBidAndInsertMyResentTrade()
+    public void deleteBidAndInsertTransactionHistory()
     {
         //TODO : 데이터 중복삽입 방지 캐시데이터 조회후삭제 혹은 다른방법 찾아보기
+        // DTO 클래스에 변수한개추가해서 SQL에 반영됐는지 여부를 확인하는 변수를 추가하기
         List<Bid> transactionHistoryList = bidItemDAO.readSoldDataWithCache();
         if (!transactionHistoryList.isEmpty()) {
             transactionHistoryMapper.insertTransactionHistory(transactionHistoryList);
