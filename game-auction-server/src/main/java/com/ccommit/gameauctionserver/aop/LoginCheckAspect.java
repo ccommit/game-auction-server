@@ -1,6 +1,7 @@
 package com.ccommit.gameauctionserver.aop;
 
 import com.ccommit.gameauctionserver.annotation.CheckLoginStatus;
+import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import com.ccommit.gameauctionserver.exception.CustomException;
 import com.ccommit.gameauctionserver.exception.ErrorCode;
 import com.ccommit.gameauctionserver.utils.SessionUtil;
@@ -9,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -24,18 +23,16 @@ public class LoginCheckAspect {
         HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();
         String userId = "";
         int index = 0;
-        switch (checkLogin.userType().toString()) {
-            case "USER":
-                userId = SessionUtil.getCurrentUserFromSession(session);
-                break;
-            case "ADMIN":
-                userId = SessionUtil.getCurrentAdminUserFromSession(session);
-                break;
-            default:
-                throw new CustomException(ErrorCode.USER_AUTHORIZATION);
-        }
-        if (userId == null) {
+
+        RequestUserInfo userInfo = SessionUtil.getCurrentUserInfoFromSession(session);
+        if(userInfo == null){
             throw new CustomException(ErrorCode.USER_AUTHORIZATION);
+        }
+
+        if(checkLogin.userType() == userInfo.getUserType()) {
+            userId = userInfo.getUserId();
+        } else {
+            throw new CustomException(ErrorCode.USER_AUTHORITY);
         }
 
         Object[] modifiedArgs = proceedingJoinPoint.getArgs();

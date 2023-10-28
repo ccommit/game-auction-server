@@ -14,4 +14,6 @@ public interface TransactionHistoryMapper {
     public List<TransactionHistoryDTO> readTransactionHistoryByUserId(String userId);
 
     public List<TransactionHistoryDTO> readTransactionHistoryByItemName(String itemName);
+
+    public List<TransactionHistoryDTO> readTransactionHistoryData(String userId, String itemName);
 }

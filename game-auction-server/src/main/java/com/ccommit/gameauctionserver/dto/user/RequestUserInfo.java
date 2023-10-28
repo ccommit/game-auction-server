@@ -1,7 +1,6 @@
 package com.ccommit.gameauctionserver.dto.user;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Getter

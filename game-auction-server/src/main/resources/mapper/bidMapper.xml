@@ -20,7 +20,7 @@
                             start_price,
                             present_price,
                             seller_id,
-                            issold,
+                            sale_status,
                             item_id)
 
         VALUES          (   NOW(),
@@ -29,7 +29,7 @@
                             #{startPrice},
                             #{startPrice},
                             #{sellerId},
-                            #{isSold},
+                            'SALE',
                             #{itemId});
     </insert>
 
@@ -41,7 +41,7 @@
                 start_price         AS startPrice,
                 present_price       AS presentPrice,
                 highestbidder_id    AS highestBidderId,
-                issold              AS isSold,
+                sale_status         AS bidStatus,
                 seller_id           AS sellerId,
                 item_id             AS itemId
         FROM    bid
@@ -56,7 +56,7 @@
                 start_price         AS startPrice,
                 present_price       AS presentPrice,
                 highestbidder_id    AS highestBidderId,
-                issold              AS isSold,
+                sale_status         AS bidStatus,
                 seller_id           AS sellerId,
                 item_id             AS itemId
         FROM    bid
@@ -71,7 +71,7 @@
                 b.start_price         AS startPrice,
                 b.present_price       AS presentPrice,
                 b.highestbidder_id    AS highestBidderId,
-                b.issold              AS isSold,
+                b.sale_status         AS bidStatus,
                 b.item_id             AS itemId
         FROM     bid b
         JOIN     item i ON b.item_id = i.id
@@ -139,9 +139,9 @@
         SET     i.user_id = #{userInfo.id},
                 seller.gold = seller.gold + b.price,
                 b.highestbidder_id = #{userInfo.userId},
-                b.issold = TRUE
+                b.sale_status = 'SOLD_OUT'
         WHERE   b.id = #{bid.id}
         AND     b.limit_time &gt; NOW()
-        AND     b.issold = FALSE;
+        AND     b.sale_status = 'SALE';
     </update>
 </mapper>

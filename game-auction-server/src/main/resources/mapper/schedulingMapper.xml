@@ -17,18 +17,18 @@
         JOIN    item    AS i      ON b.item_id          = i.id              COLLATE utf8_unicode_ci
         JOIN    user    AS seller ON b.seller_id        = seller.user_id    COLLATE utf8_unicode_ci
         JOIN    user    AS bidder ON b.highestbidder_id = bidder.user_id    COLLATE utf8_unicode_ci
-        SET     seller.gold = seller.gold + b.present_price,
-                i.user_id   = bidder.id,
-                b.issold    = TRUE
-        WHERE   b.limit_time &lt; NOW()
+        SET     seller.gold     = seller.gold + b.present_price,
+                i.user_id       = bidder.id,
+                b.sale_status   = 'SOLD_OUT'
+        WHERE   b.limit_time    &lt; NOW()
         AND     b.highestbidder_id IS NOT NULL
-        AND     b.issold = FALSE;
+        AND     b.sale_status   = 'SALE';
     </update>
 
     <delete id="schedulingDelete">
         DELETE
         FROM    bid
         WHERE   limit_time &lt; NOW()
-        OR      issold = TRUE;
+        OR      sale_status = 'SOLD_OUT';
     </delete>
 </mapper>

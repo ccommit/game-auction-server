@@ -1,5 +1,6 @@
 package com.ccommit.gameauctionserver.dto;
 
+import com.ccommit.gameauctionserver.dto.bid.BidStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public class Bid {
 
     private String highestBidderId;
     private String sellerId;
-    private boolean isSold;
+    private BidStatus bidStatus;
     private int itemId;
 
 }

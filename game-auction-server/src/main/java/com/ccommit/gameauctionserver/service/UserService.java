@@ -3,7 +3,6 @@ package com.ccommit.gameauctionserver.service;
 import com.ccommit.gameauctionserver.dto.User;
 import com.ccommit.gameauctionserver.dto.user.RequestUserInfo;
 import com.ccommit.gameauctionserver.mapper.UserMapper;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

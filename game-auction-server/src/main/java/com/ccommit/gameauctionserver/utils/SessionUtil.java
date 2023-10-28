@@ -7,7 +7,6 @@ public class SessionUtil {
 
     private static final String USER_ID = "USER_ID";
     private static final String USER_INFO = "USER_INFO";
-    private static final String ADMIN_ID = "ADMIN_ID";
 
     public static void loginUser(HttpSession httpSession, String id, RequestUserInfo userInfo) {
         httpSession.setAttribute(USER_ID, id);
@@ -23,10 +22,6 @@ public class SessionUtil {
         }
     }
 
-    public static void loginAdmin(HttpSession httpSession, String id) {
-        httpSession.setAttribute(ADMIN_ID, id);
-    }
-
     public static void logoutUser(HttpSession httpSession) {
         httpSession.removeAttribute(USER_ID);
         httpSession.removeAttribute(USER_INFO);
@@ -40,7 +35,4 @@ public class SessionUtil {
         return (RequestUserInfo) httpSession.getAttribute(USER_INFO);
     }
 
-    public static String getCurrentAdminUserFromSession(HttpSession httpSession) {
-        return (String) httpSession.getAttribute(ADMIN_ID);
-    }
 }

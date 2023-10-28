@@ -30,4 +30,17 @@ public class TransactionHistoryService {
         return transactionHistoryDTOList;
     }
 
+    public List<TransactionHistoryDTO> loadTransactionHistoryData(String userId, String itemName)
+    {
+        if(itemName.equals(""))
+        {
+            itemName = null;
+        }
+
+        List<TransactionHistoryDTO> transactionHistoryDTOList = new ArrayList<>();
+        transactionHistoryDTOList = transactionHistoryMapper.readTransactionHistoryData(userId,itemName);
+
+        return transactionHistoryDTOList;
+    }
+
 }
