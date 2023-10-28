@@ -15,12 +15,12 @@ import com.ccommit.gameauctionserver.mapper.ItemMapper;
 import com.ccommit.gameauctionserver.mapper.UserMapper;
 import com.ccommit.gameauctionserver.utils.BidMQProducer;
 import lombok.AllArgsConstructor;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +69,7 @@ public class BidService {
     * */
     @Transactional
     public Bid updateItemWithBid(int bidId, String userId, int priceGold) {
+
         Bid bidItem = bidItemDAO.readBidWithCache(bidId);
         RequestUserInfo userInfo = userMapper.readUserInfo(userId);
 
@@ -88,29 +89,16 @@ public class BidService {
                 .build();
         try {
             bidMQProducer.ProduceBidData(bidWithUserDTO);
-        } catch (Exception e) {
-            if (e instanceof ConnectException) {
+        } catch (MyBatisSystemException e) {
                 historyBidDAO.insertHistoryUpdateBid(bidWithUserDTO);
-                throw new CustomException(ErrorCode.SERVER_INTERNAL);
-            } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }
+                throw new CustomException(ErrorCode.SERVER_INTERNAL);
         }
 
-        Bid responseBid = Bid.builder()
-                .id(bidId)
-                .createTime(bidItem.getCreateTime())
-                .limitTime(bidItem.getLimitTime())
-                .price(bidItem.getPrice())
-                .startPrice(bidItem.getStartPrice())
-                .presentPrice(priceGold)
-                .highestBidderId(userId)
-                .sellerId(bidItem.getSellerId())
-                .isSold(priceGold==bidItem.getPrice())
-                .itemId(bidItem.getItemId())
-                .build();
-
-        return bidItemDAO.UpdateCacheData(responseBid);
+        bidItem.setPresentPrice(priceGold);
+        bidItem.setHighestBidderId(userId);
+        bidItem.setSold(priceGold == bidItem.getPrice());
+        return bidItemDAO.UpdateCacheData(bidItem);
     }
 
     public Bid readLastItemToBid() {

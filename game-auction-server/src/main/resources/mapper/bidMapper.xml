@@ -10,7 +10,7 @@
         WHERE   item_id = #{itemId}
     </select>
 
-    <insert id="registrationItem" parameterType="com.ccommit.gameauctionserver.dto.User">
+    <insert id="registrationItem">
         <selectKey keyProperty="id" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -61,7 +61,6 @@
                 item_id             AS itemId
         FROM    bid
         WHERE   id = #{id}
-
     </select>
 
     <select id="searchBidData" resultType="com.ccommit.gameauctionserver.dto.Bid">
@@ -137,10 +136,11 @@
         UPDATE  bid     AS b
         JOIN    item    AS i       ON b.item_id     = i.id            COLLATE utf8_unicode_ci
         JOIN    user    AS seller  ON b.seller_id   = seller.user_id  COLLATE utf8_unicode_ci
-        SET     i.user_id = #{userId},
+        SET     i.user_id = #{userInfo.id},
                 seller.gold = seller.gold + b.price,
+                b.highestbidder_id = #{userInfo.userId},
                 b.issold = TRUE
-        WHERE   b.id = #{bidId}
+        WHERE   b.id = #{bid.id}
         AND     b.limit_time &gt; NOW()
         AND     b.issold = FALSE;
     </update>
