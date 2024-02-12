@@ -23,4 +23,8 @@ public interface BidMapper {
     void updateInstantBid(BidWithUserDTO bidWithUserDTO);
 
     List<Bid> searchBidData(BidSearchFilter bidSearchFilter);
+
+    void schedulingUpdateBidInfo(Bid bid);
+
+    void schedulingEndBid();
 }

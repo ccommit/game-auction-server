@@ -12,11 +12,13 @@ import com.ccommit.gameauctionserver.utils.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
 
     private final UserService userService;

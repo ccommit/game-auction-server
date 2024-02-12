@@ -92,7 +92,7 @@ public class RabbitMQConfig {
         return connectionFactory;
     }
 
-/*    TODO : 메시지 재전송 처리를 위한 recoverer는 MethodInvocationRecoverer<?>형으로 형변환이 필요합니다.
+/*    메시지 재전송 처리를 위한 recoverer는 MethodInvocationRecoverer<?>형으로 형변환이 필요합니다.
 Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
 2023-10-21T01:44:15.618+09:00 ERROR 19856 --- [           main] o.s.boot.SpringApplication               : Application run failed
 오류가 발생중입니다.

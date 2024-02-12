@@ -31,10 +31,10 @@ public class ItemDAO {
             return item;
         } else {
             item = itemMapper.readItem(itemId);
-
-            redisTemplate.opsForValue().set(key,item);
-            redisTemplate.expire(key, 1, TimeUnit.DAYS);
-
+            if( item != null) {
+                redisTemplate.opsForValue().set(key, item);
+                redisTemplate.expire(key, 1, TimeUnit.DAYS);
+            }
             return item;
         }
         

@@ -43,9 +43,9 @@ public class ApiResponse<T> {
     }
 
     //예외 발생으로 인한 API 호출 실패시의 반환
-    public static ApiResponse<?> createError(String message)
+    public static ApiResponse<?> createError(String message, int code)
     {
-        return new ApiResponse<>(ERROR_STATUS, null, message);
+        return new ApiResponse<>(SUCCESS_STATUS, code, message);
     }
 
 }

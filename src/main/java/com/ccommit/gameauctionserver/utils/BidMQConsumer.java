@@ -1,6 +1,7 @@
 package com.ccommit.gameauctionserver.utils;
 
 import com.ccommit.gameauctionserver.config.RabbitMQConfig;
+import com.ccommit.gameauctionserver.dto.bid.BidStatus;
 import com.ccommit.gameauctionserver.dto.bid.BidWithUserDTO;
 import com.ccommit.gameauctionserver.mapper.BidMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,8 @@ public class BidMQConsumer {
 * */
     @RabbitListener(queues = RabbitMQConfig.bidQueueName)
     public void receiveMessageQueueWithBidData(BidWithUserDTO bidWithUserDTO) {
-
         if (bidWithUserDTO.getPirceGold() == bidWithUserDTO.getBid().getPrice()) {
             bidMapper.updateInstantBid(bidWithUserDTO);
-
         }
 
         bidMapper.updateUserGold(bidWithUserDTO.getUserInfo().getUserId(),

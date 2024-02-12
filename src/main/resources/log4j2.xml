@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Properties>
+        <Property name="logPath">./logs</Property>
+        <Property name="logPattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss} [%t] %c{1} - %msg%n</Property>
+        <Property name="serviceName">game-auction-server</Property>
+    </Properties>
+    <Appenders>
+        <Console name="console">
+            <PatternLayout pattern="${logPattern}"/>
+        </Console>
+        <RollingFile
+                name="file"
+                append="true"
+                fileName="${logPath}/${serviceName}.log"
+                filePattern="${logPath}/${serviceName}.%d{yyyy-MM-dd}.%i.log.zip">
+            <PatternLayout pattern="${logPattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="5">
+                    <IfFileName glob="${serviceName}.*.log"/>
+                    <IfLastModified age="15d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="consolelog" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -12,6 +12,5 @@ public interface UserMapper {
     void createUser(User user);
     Integer getID(String userId, String password);
     void updateUser(RequestUserInfo userInfo);
-    void deleteUser(User user);
     RequestUserInfo readUserInfo(String userId);
 }

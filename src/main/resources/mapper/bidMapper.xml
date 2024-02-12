@@ -73,7 +73,7 @@
                 b.item_id             AS itemId
         FROM     bid b
         JOIN     item i ON b.item_id = i.id
-        WHERE    1 = 1
+        WHERE    b.sale_status = 'SALE'
         <if test="minLevel != null">
             AND #{minLevel} &lt; i.equipment_level
         </if>
@@ -98,29 +98,28 @@
         <if test="subCategory != null">
             AND #{subCategory} = 1.sub_type
         </if>
-
-        <if test="bidSortingType != null">
-            <if test="bidSortingType == 'NAME'">
+        <choose>
+            <when test="bidSortingType == 'NAME'">
                 ORDER BY i.name
-            </if>
-            <if test="bidSortingType.toString() == 'LIMIT_TIME'">
-                ORDER BY b.limit_time
-            </if>
-            <if test="bidSortingType.toString() == 'PRESENT_PRICE'">
+            </when>
+            <when test="bidSortingType == 'PRESENT_PRICE'">
                 ORDER BY b.present_price
-            </if>
-            <if test="bidSortingType.toString() == 'PRICE'">
+            </when>
+            <when test="bidSortingType == 'PRICE'">
                 ORDER BY b.price
-            </if>
-
-            <if test ="desc">
+            </when>
+            <otherwise>
+                ORDER BY b.limit_time
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="desc">
                 DESC
-            </if>
-            <if test ="!desc">
+            </when>
+            <otherwise>
                 ASC
-            </if>
-        </if>
-
+            </otherwise>
+        </choose>
         LIMIT #{limitPage} OFFSET #{offset}
     </select>
 
@@ -142,4 +141,27 @@
         AND     b.limit_time &gt; NOW()
         AND     b.sale_status = 'SALE';
     </update>
+
+    <update id="schedulingUpdateBidInfo">
+        UPDATE  bid
+        SET
+        present_price = #{presentPrice},
+        highestbidder_id = #{highestBidderId}
+        WHERE   id = #{id}
+        AND     limit_time &gt; DATE()
+    </update>
+
+    <update id="schedulingEndBid">
+        UPDATE  bid     AS b
+        JOIN    item    AS i      ON b.item_id          = i.id              COLLATE utf8_unicode_ci
+        JOIN    user    AS seller ON b.seller_id        = seller.user_id    COLLATE utf8_unicode_ci
+        JOIN    user    AS bidder ON b.highestbidder_id = bidder.user_id    COLLATE utf8_unicode_ci
+        SET     seller.gold     = seller.gold + b.present_price,
+        i.user_id       = bidder.id,
+        b.sale_status   = 'SOLD_OUT'
+        WHERE   b.limit_time    &lt; NOW()
+        AND     b.highestbidder_id IS NOT NULL
+        AND     b.sale_status   = 'SALE';
+    </update>
+
 </mapper>

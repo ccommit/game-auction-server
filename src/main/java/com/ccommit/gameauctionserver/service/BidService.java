@@ -2,9 +2,7 @@ package com.ccommit.gameauctionserver.service;
 
 import com.ccommit.gameauctionserver.dao.BidItemDAO;
 import com.ccommit.gameauctionserver.dao.HistoryBidDAO;
-import com.ccommit.gameauctionserver.dao.ItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
-import com.ccommit.gameauctionserver.dto.Item;
 import com.ccommit.gameauctionserver.dto.bid.BidSearchFilter;
 import com.ccommit.gameauctionserver.dto.bid.BidStatus;
 import com.ccommit.gameauctionserver.dto.bid.BidWithUserDTO;
@@ -16,17 +14,17 @@ import com.ccommit.gameauctionserver.mapper.ItemMapper;
 import com.ccommit.gameauctionserver.mapper.UserMapper;
 import com.ccommit.gameauctionserver.utils.BidMQProducer;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.mybatis.spring.MyBatisSystemException;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class BidService {
 
     private BidMapper bidMapper;
@@ -34,18 +32,19 @@ public class BidService {
     private UserMapper userMapper;
     private BidItemDAO bidItemDAO;
     private HistoryBidDAO historyBidDAO;
-    private ItemDAO itemDAO;
     private BidMQProducer bidMQProducer;
 
 
     public void isExistItemId(int itemId) {
         if (bidMapper.isExistItemId(itemId) != null) {
+            log.info(ErrorCode.ITEM_DUPLICATED.getMessage());
             throw new CustomException(ErrorCode.ITEM_DUPLICATED);
         }
     }
 
     public void isUserItemId(int itemId, String userId) {
         if (itemMapper.isUserItemId(itemId, userId) == null) {
+            log.info(ErrorCode.ITEM_FORBIDDEN.getMessage());
             throw new CustomException(ErrorCode.ITEM_FORBIDDEN);
         }
     }
@@ -75,11 +74,14 @@ public class BidService {
         RequestUserInfo userInfo = userMapper.readUserInfo(userId);
 
         if (bidItem == null || !(bidItem.getBidStatus().equals(BidStatus.SALE))) {
+            log.info(ErrorCode.ITEM_FORBIDDEN.getMessage());
             throw new CustomException(ErrorCode.ITEM_FORBIDDEN);
         } else if (bidItem.getSellerId().equals(userId) || userId.equals(bidItem.getHighestBidderId())) {
+            log.info(ErrorCode.BID_AUTHORITY.getMessage());
             throw new CustomException(ErrorCode.BID_AUTHORITY);
         } else if (bidItem.getPresentPrice() >= priceGold || bidItem.getPrice() < priceGold
                 || userInfo.getGold() < priceGold) {
+            log.info(ErrorCode.BID_CREDIT_CANCLED.getMessage());
             throw new CustomException(ErrorCode.BID_CREDIT_CANCLED);
         }
 
@@ -90,12 +92,16 @@ public class BidService {
                 .build();
         try {
             bidMQProducer.ProduceBidData(bidWithUserDTO);
-        } catch (MyBatisSystemException e) {
+        }
+        catch (MyBatisSystemException e) {
+
                 historyBidDAO.insertHistoryUpdateBid(bidWithUserDTO);
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                log.error(ErrorCode.SERVER_INTERNAL.getMessage(),"MyBatis Server Error");
                 throw new CustomException(ErrorCode.SERVER_INTERNAL);
+        }  catch (Exception e){
+            log.error(e.getMessage());
         }
-
         bidItem.setPresentPrice(priceGold);
         bidItem.setHighestBidderId(userId);
         bidItem.setBidStatus(priceGold == bidItem.getPrice() ? BidStatus.SOLD_OUT : BidStatus.SALE);
@@ -106,19 +112,12 @@ public class BidService {
         return bidMapper.readLastItemToBid();
     }
 
-    public List<Pair<Bid, Item>> searchItemsToBid(BidSearchFilter bid) {
-
-        List<Bid> bidList = bidMapper.searchBidData(bid);
-        List<Pair<Bid, Item>> pairs = new ArrayList<>();
-
-        for (Bid bids : bidList) {
-            Bid resultBid = bidItemDAO.readBidWithCache(bids.getId());
-            Item resultItem = itemDAO.readItemWithCache(bids.getItemId());
-
-            Pair<Bid, Item> pair = Pair.of(resultBid, resultItem);
-            pairs.add(pair);
+    public List<Bid> searchItemsToBid(BidSearchFilter bid) {
+        try {
+            return bidMapper.searchBidData(bid);
+        } catch (Exception e) {
+            log.error(e.getMessage(), "SearchException");
+            throw e;
         }
-
-        return pairs;
     }
 }

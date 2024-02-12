@@ -2,9 +2,10 @@ package com.ccommit.gameauctionserver.scheduler;
 
 import com.ccommit.gameauctionserver.dao.BidItemDAO;
 import com.ccommit.gameauctionserver.dto.Bid;
-import com.ccommit.gameauctionserver.mapper.SchedulingMapper;
+import com.ccommit.gameauctionserver.mapper.BidMapper;
 import com.ccommit.gameauctionserver.mapper.TransactionHistoryMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +14,11 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class BidScheduler {
 
     private final BidItemDAO bidItemDAO;
-    private final SchedulingMapper schedulingMapper;
+    private final BidMapper bidMapper;
     private final TransactionHistoryMapper transactionHistoryMapper;
 
     /**
@@ -36,7 +38,7 @@ public class BidScheduler {
         List<Bid> bidItems = bidItemDAO.readCacheDataWithTime();
         if(!bidItems.isEmpty()) {
             for (Bid bidItem : bidItems) {
-                schedulingMapper.schedulingUpdateBidInfo(bidItem);
+                bidMapper.schedulingUpdateBidInfo(bidItem);
             }
         }
     }
@@ -44,18 +46,15 @@ public class BidScheduler {
     @Scheduled(cron = "0 0 0/6 * * *")
     public void checkEndTimeWithBid()
     {
-        schedulingMapper.schedulingEndBid();
+        bidMapper.schedulingEndBid();
     }
 
     @Scheduled(cron = "0 0 0 1 * *")
-    public void deleteBidAndInsertTransactionHistory()
+    public void insertTransactionHistory()
     {
-        //TODO : 데이터 중복삽입 방지 캐시데이터 조회후삭제 혹은 다른방법 찾아보기
-        // DTO 클래스에 변수한개추가해서 SQL에 반영됐는지 여부를 확인하는 변수를 추가하기
         List<Bid> transactionHistoryList = bidItemDAO.readSoldDataWithCache();
         if (!transactionHistoryList.isEmpty()) {
             transactionHistoryMapper.insertTransactionHistory(transactionHistoryList);
         }
-        schedulingMapper.schedulingDelete();
     }
 }

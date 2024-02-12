@@ -11,6 +11,15 @@ public class CustomExceptionHandlers {
     @ExceptionHandler(CustomException.class)
     private ResponseEntity<?> handCustomException(CustomException ex)
     {
-        return new ResponseEntity<>(ex.getErrorCode().getMessage(),ex.getErrorCode().getStatus());
+//      return new ResponseEntity<>(ex.getErrorCode().getMessage(), HttpStatusCode.valueOf(ex.getErrorCode().getCode()));
+        return new ResponseEntity<>((ex.getErrorCode().getCode()+" , "+ex.getErrorCode().getMessage()),
+                HttpStatus.OK);
+
     }
+
+/*    @ExceptionHandler(CustomException.class)
+    private ApiResponse<?> handCustomException(CustomException ex)
+    {
+        return ApiResponse.createError(ex.getErrorCode().getMessage(), ex.getErrorCode().getCode());
+    }*/
 }
