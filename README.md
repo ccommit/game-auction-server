@@ -86,7 +86,8 @@ __경매장 입찰 내역 조회__
 <details>
 <summary>경매장 입찰</summary>
   
-![경매장 입찰(카카오오븐 _ 입찰_구매)](https://github.com/ccommit/game-auction-server/assets/43266403/2da0c0c2-8c87-465b-b350-a62f01e254d1)
+![경매장 입찰(카카오오븐 _ 입찰_구매)](https://github.com/ccommit/game-auction-server/assets/43266403/f0da68b2-6021-4216-984c-329ef1998f02)
+
 
 
 
