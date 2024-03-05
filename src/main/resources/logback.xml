@@ -27,8 +27,8 @@
     <maxFlushTimeMillis>30000</maxFlushTimeMillis>
     <maxBlockTimeMillis>5000</maxBlockTimeMillis>
     <retentionTimeDays>0</retentionTimeDays>
-    <accessKeyId></accessKeyId>
-    <secretAccessKey></secretAccessKey>
+    <accessKeyId>AKIA3ID5ZRWRLB3B6F5B</accessKeyId>
+    <secretAccessKey>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</secretAccessKey>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>INFO</level>
     </filter>
